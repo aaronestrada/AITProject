@@ -59,7 +59,7 @@ class BaseView {
                 foreach($params as $paramItem => $value)
                     unset(${$paramItem});
             } else
-                die('Error: layout ' . $this->layoutName . ' does not exist');
+                \framework\BaseError::throwMessage(404, 'Layout ' . $this->layoutName . ' does not exist');             
         }
         else echo $viewContent;
     }

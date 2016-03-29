@@ -1,10 +1,9 @@
 <?php
-
 namespace framework;
 
 /**
  * Class BaseApplication
- * Object used as orchestrator
+ * Object used as orchestrator between controller and requests from the URI
  * 1) Verifies parameters sent in request
  * 2) Calls the controller specified in request
  * @package framework
@@ -30,6 +29,9 @@ class BaseApplication {
      * Run application framework
      */
     public function run() {
+        error_reporting(-1);
+        ini_set('display_errors', 'On');
+
         //Step 1: Obtain REQUEST URI values
         $requestURI = $_SERVER["REQUEST_URI"];
 
@@ -56,6 +58,7 @@ class BaseApplication {
         if(class_exists($controllerName, true)) {
             $controller = new $controllerName();
 
+            //verifies that method exists inside the controller
             if(method_exists($controller, $actionName)) {
 
                 //Step 7: If method exists, construct request parameters and save them in BaseRequest object
@@ -63,16 +66,15 @@ class BaseApplication {
                     for ($paramIndex = $initIndex + 2; $paramIndex < count($requestList); $paramIndex += 2)
                         $this->requestParameters[$requestList[$paramIndex]] = $requestList[$paramIndex + 1];
 
+                //Step 8: save request parameters in BaseRequest class
                 if (count($this->requestParameters) > 0)
                     $controller->setRequest(new BaseRequest($this->requestParameters));
 
                 //Step 8: Invoke action from controller
                 $controller->$actionName();
             }
-            else
-                die('Action ' . ucfirst($requestList[$initIndex + 1]) . ' does not exist.');
+            else \framework\BaseError::throwMessage(404, 'Action ' . ucfirst($requestList[$initIndex + 1]) . ' does not exist.');
         }
-        else
-            die('Controller ' . ucfirst($requestList[$initIndex]) . ' does not exist.');
+        else \framework\BaseError::throwMessage(404, 'Controller ' . ucfirst($requestList[$initIndex]) . ' does not exist.');
     }
 }
