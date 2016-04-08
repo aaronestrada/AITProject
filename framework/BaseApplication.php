@@ -70,7 +70,7 @@ class BaseApplication {
                 if (count($this->requestParameters) > 0)
                     $controller->setRequest(new BaseRequest($this->requestParameters));
 
-                //Step 8: Invoke action from controller
+                //Step 9: Invoke action from controller
                 $controller->$actionName();
             }
             else \framework\BaseError::throwMessage(404, 'Action ' . ucfirst($requestList[$initIndex + 1]) . ' does not exist.');

@@ -8,6 +8,9 @@ class BaseController {
     //BaseRequest object for controller
     protected $request;
 
+    //BaseSession $session object for controller
+    protected $session;
+
     public function __construct() {
         $configParams = require_once('../config/config.php');
 
@@ -16,6 +19,9 @@ class BaseController {
 
         //Create new BaseRequest object to store POST or GET values
         $this->request = new BaseRequest();
+
+        //Create new BaseSession object to manage sessions in application
+        $this->session = new BaseSession();
     }
 
     /**

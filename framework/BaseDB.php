@@ -5,7 +5,7 @@ use PDO;
 class BaseDB extends \PDO {
     public function __construct() {
         try {
-            $db_params = require_once('../config/db.php');
+            $db_params = require('../config/db.php');
             if(!empty($db_params['servername']) && !empty($db_params['driver']) && !empty($db_params['database'])) {
                 $connectionString =
                     $db_params['driver'] .

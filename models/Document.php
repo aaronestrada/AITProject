@@ -3,14 +3,19 @@ namespace models;
 use \framework\BaseModel;
 
 class Document extends BaseModel {
-    protected $tableName = 'document';
+    protected $primaryKey = 'id';
 
     protected $fields = [
         'id',
-        'filename',
-        'funder',
+        'author_id',
         'status',
-        'created_at'
+        'name',
+        'description',
+        'price',
+        'created_at',
+        'modified_at',
+        'published_at',
+        'filename'
     ];
 
     public function __construct() {

@@ -91,7 +91,7 @@ class BaseView {
             $this->renderLayout($viewContent);
         }
         else
-            die('Error: view ' . $controller . '/' . $view . ' does not exist');
+            \framework\BaseError::throwMessage(404, 'View ' . $controller . '/' . $view . ' does not exist');
     }
 
 }
