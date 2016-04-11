@@ -38,6 +38,8 @@ class BaseSession {
 
     //BaseSession constructor
     public function __construct() {
-        session_start();
+        //Verifies that session has not been set
+        if (session_status() == PHP_SESSION_NONE)
+            session_start();
     }
 }

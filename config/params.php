@@ -1,7 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: aarone
- * Date: 15/03/16
- * Time: 8:38 PM
- */
+return [
+    'roleAccess' => [
+        'sessionName' => 'BaseAccessManagement', //name of the session to store role access object
+        'timeout' => '15' //time for session to be alive (in seconds)
+    ]
+];

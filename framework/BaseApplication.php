@@ -11,26 +11,35 @@ namespace framework;
 class BaseApplication {
     private $isPost;
     private $requestParameters;
+    private $environment;
 
     /**
      * Class constructor
      * Verifies request type: POST or GET
      * Set variables in $requestParameters list
+     *
+     * @param string $environment Environment to set the application
      */
-    public function __construct() {
+    public function __construct($environment = 'dev') {
         if(count($_POST) > 0) {
             $this->isPost = true;
             foreach ($_POST as $param => $value)
                 $this->requestParameters[$param] = $value;
         }
+
+        $this->environment = in_array($environment, ['dev', 'prd']) ? $environment : 'dev';
     }
 
     /**
      * Run application framework
      */
     public function run() {
-        error_reporting(-1);
-        ini_set('display_errors', 'On');
+
+        //if is a development enviroment, show errors
+        if($this->environment == 'dev') {
+            error_reporting(-1);
+            ini_set('display_errors', 'On');
+        }
 
         //Step 1: Obtain REQUEST URI values
         $requestURI = $_SERVER["REQUEST_URI"];
@@ -51,30 +60,39 @@ class BaseApplication {
             $initIndex++;
 
         //Step 5: Construct controller and action name
-        $controllerName = '\controllers\\' . ucfirst($requestList[$initIndex]) . 'Controller';
-        $actionName = 'action' . ucfirst($requestList[$initIndex + 1]);
+        $actionRequestName = isset($requestList[$initIndex + 1]) ? $requestList[$initIndex + 1] : '';
+        $controllerRequestName = isset($requestList[$initIndex]) ? $requestList[$initIndex] : '';
+
+        $controllerName = '\controllers\\' . ucfirst($controllerRequestName) . 'Controller';
+        $actionName = 'action' . ucfirst($actionRequestName);
 
         //Step 6: Verify that class and method exists to invoke
         if(class_exists($controllerName, true)) {
             $controller = new $controllerName();
 
-            //verifies that method exists inside the controller
+            //Step 7: verifies that method exists inside the controller
             if(method_exists($controller, $actionName)) {
 
-                //Step 7: If method exists, construct request parameters and save them in BaseRequest object
-                if (!$this->isPost)
-                    for ($paramIndex = $initIndex + 2; $paramIndex < count($requestList); $paramIndex += 2)
-                        $this->requestParameters[$requestList[$paramIndex]] = $requestList[$paramIndex + 1];
+                //Step 8: validate controller behavior prior to execute action
+                $accessValidated = $controller->validateBehavior($actionRequestName);
 
-                //Step 8: save request parameters in BaseRequest class
-                if (count($this->requestParameters) > 0)
-                    $controller->setRequest(new BaseRequest($this->requestParameters));
+                if($accessValidated) {
+                    //Step 9: If method exists, construct request parameters and save them in BaseRequest object
+                    if (!$this->isPost)
+                        for ($paramIndex = $initIndex + 2; $paramIndex < count($requestList); $paramIndex += 2)
+                            $this->requestParameters[$requestList[$paramIndex]] = isset($requestList[$paramIndex + 1]) ? $requestList[$paramIndex + 1] : null;
 
-                //Step 9: Invoke action from controller
-                $controller->$actionName();
+                    //Step 10: save request parameters in BaseRequest class
+                    if (count($this->requestParameters) > 0)
+                        $controller->setRequest(new BaseRequest($this->requestParameters));
+
+                    //Step 11: Invoke action from controller
+                    $controller->$actionName();
+                }
+                else \framework\BaseError::throwMessage(403, 'Forbidden: Action "' . ucfirst($actionRequestName) . '" cannot be accessed by this role.');
             }
-            else \framework\BaseError::throwMessage(404, 'Action ' . ucfirst($requestList[$initIndex + 1]) . ' does not exist.');
+            else \framework\BaseError::throwMessage(404, 'Action "' . ucfirst($actionRequestName) . '" does not exist.');
         }
-        else \framework\BaseError::throwMessage(404, 'Controller ' . ucfirst($requestList[$initIndex]) . ' does not exist.');
+        else \framework\BaseError::throwMessage(404, 'Controller "' . ucfirst($controllerRequestName) . '" does not exist.');
     }
 }
