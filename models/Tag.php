@@ -3,13 +3,13 @@ namespace models;
 use \framework\BaseModel;
 
 class Tag extends BaseModel {
-    protected $primaryKey = 'id';
+    protected $primaryKey = ['id'];
 
     protected $fields = [
-        'id',
-        'name',
-        'status',
-        'created_at'
+        'id' => 'integer',
+        'name' => 'string',
+        'status' => 'integer',
+        'created_at' => 'date'
     ];
 
     public function __construct() {

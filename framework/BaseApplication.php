@@ -41,7 +41,15 @@ class BaseApplication {
             ini_set('display_errors', 'On');
         }
 
-        //Step 1: Obtain REQUEST URI values
+        /**
+         * Step 1: Obtain REQUEST URI values
+         * For GET requests, it is possible to manage two types of requests:
+         * 1) /controller/action/param1/val1/param2/val2/...
+         * 2) /controller/action?param1=val1&param2=val2&...
+         *
+         * On step 5 this verification is made in order to obtain the parameter values according
+         * to the different settings.
+         */
         $requestURI = $_SERVER["REQUEST_URI"];
 
         //Step 2: Remove bars from beginning and end if found
@@ -61,6 +69,38 @@ class BaseApplication {
 
         //Step 5: Construct controller and action name
         $actionRequestName = isset($requestList[$initIndex + 1]) ? $requestList[$initIndex + 1] : '';
+
+        //Step 5.1: Verify that request call is not in the form /controller/action?param1=value1&param2=value2...
+        $getParamsList = [];
+        $actionRequestDivision = explode('?', $actionRequestName);
+        if(count($actionRequestDivision) == 2) {
+            //Obtain action request name
+            $actionRequestName = $actionRequestDivision[0];
+
+            //Obtain list of request parameters
+            $paramsList = explode('&', $actionRequestDivision[1]);
+            if (count($paramsList) > 0) {
+                foreach($paramsList as $paramItem) {
+                    /*
+                     * Since the parameters can have a double equal sign (e.g. variable==),
+                     * explode function won't work.  Extract value manually with strpos and substr functions
+                     */
+                    $equalPosition = strpos($paramItem, '=');
+
+                    $paramName = substr($paramItem, 0, $equalPosition);
+                    $paramValue = '';
+
+                    //Verify that parameter value is not empty to subtract value
+                    if($equalPosition + 1 < strlen($paramItem))
+                        $paramValue = substr($paramItem, $equalPosition + 1, strlen($paramItem));
+
+                    if($paramValue !== $paramItem)
+                        $getParamsList[$paramName] = urldecode($paramValue);
+                }
+            }
+        }
+
+        //Get controller name
         $controllerRequestName = isset($requestList[$initIndex]) ? $requestList[$initIndex] : '';
 
         $controllerName = '\controllers\\' . ucfirst($controllerRequestName) . 'Controller';
@@ -79,12 +119,18 @@ class BaseApplication {
                 if($accessValidated) {
                     //Step 9: If method exists, construct request parameters and save them in BaseRequest object
                     if (!$this->isPost)
-                        for ($paramIndex = $initIndex + 2; $paramIndex < count($requestList); $paramIndex += 2)
-                            $this->requestParameters[$requestList[$paramIndex]] = isset($requestList[$paramIndex + 1]) ? $requestList[$paramIndex + 1] : null;
+                        if(count($getParamsList) > 0) {
+                            foreach ($getParamsList as $paramIndex => $paramValue)
+                                $this->requestParameters[$paramIndex] = $paramValue;
+                        }
+                        else {
+                            for ($paramIndex = $initIndex + 2; $paramIndex < count($requestList); $paramIndex += 2)
+                                $this->requestParameters[$requestList[$paramIndex]] = isset($requestList[$paramIndex + 1]) ? $requestList[$paramIndex + 1] : null;
+                        }
 
                     //Step 10: save request parameters in BaseRequest class
                     if (count($this->requestParameters) > 0)
-                        $controller->setRequest(new BaseRequest($this->requestParameters));
+                        $controller->setRequest(new BaseRequest($this->requestParameters, $this->isPost));
 
                     //Step 11: Invoke action from controller
                     $controller->$actionName();

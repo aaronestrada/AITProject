@@ -11,13 +11,15 @@ namespace framework;
  */
 class BaseRequest {
     private $parameters;
+    private $isPost;
 
     /**
      * BaseRequest constructor.
      * @param array $parameters List of parameters to be stored in class
      */
-    public function __construct($parameters = []) {
+    public function __construct($parameters = [], $isPost = false) {
         $this->parameters = $parameters;
+        $this->isPost = $isPost === true ? true : false;
     }
 
     /**
@@ -29,5 +31,13 @@ class BaseRequest {
         if(isset($this->parameters[$name]))
             return $this->parameters[$name];
         return null;
+    }
+
+    /**
+     * Obtain whether the request made was by POST or not
+     * @return bool TRUE if is POST request
+     */
+    public function isPostRequest() {
+        return $this->isPost;
     }
 }

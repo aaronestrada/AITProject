@@ -101,4 +101,13 @@ class BaseController {
     public function validateBehavior($actionName) {
         return $this->roleAccess->validateBehavior($actionName, $this->behavior());
     }
+
+    /**
+     * Redirect to another page via Controller
+     * @param $redirectPage Page to redirect
+     */
+    public function redirect($redirectPage) {
+        header("Location: /" . $redirectPage);
+        exit();
+    }
 }

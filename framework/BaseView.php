@@ -62,6 +62,9 @@ class BaseView {
                 \framework\BaseError::throwMessage(404, 'Layout ' . $this->layoutName . ' does not exist');             
         }
         else echo $viewContent;
+
+        //After rendering layout, end application
+        exit();
     }
 
     /**
@@ -77,7 +80,12 @@ class BaseView {
             foreach($params as $paramItem => $value)
                 ${$paramItem} = $value;
 
-            //include specified view
+            /*
+             * Include specified view.  Functions ob_start and ob_end_clean are used to render the content of
+             * the view without displaying it in screen.  The content must be displayed at the moment of rendering
+             * the layout content.  Inside the layout the variable $viewContent is used to display whatever content
+             * is inside each view.
+             */
             ob_start();
             require_once('../' . $viewPathFile);
             $viewContent = ob_get_contents();
