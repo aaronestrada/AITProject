@@ -219,95 +219,73 @@ class BaseRoleAccess {
      * @param array $controllerBehavior Behavior structure for a controller
      * @return bool Whether the behavior has been validated or not in order to execute the action
      */
-    public function validateBehavior($actionName, $controllerBehavior) {
-        $globalBehaviorValidator = false;
-        $behaviorValidationList = [];
 
+    public function validateBehavior($actionName, $controllerBehavior) {
         if(count($controllerBehavior) > 0) {
             foreach ($controllerBehavior as $behaviorItem) {
-                //by default, "allow" access as default
-                $permissionValue = 'allow';
-                if (isset($behaviorItem['permission'])) {
-                    if (in_array($behaviorItem['permission'], ['allow', 'deny']))
-                        $permissionValue = $behaviorItem['permission'];
+                $actionFound = false;
+                $applyToAllActions = false;
+
+                //Step 1: Verify that action is found in the behavior rule
+                if (isset($behaviorItem['actions'])) {
+                    if(in_array('*', $behaviorItem['actions']))
+                        $applyToAllActions = true;
+                    elseif(in_array($actionName, $behaviorItem['actions']))
+                        $actionFound = true;
                 }
 
-                //obtain list of actions to give / deny access
-                $actionList = isset($behaviorItem['actions']) ? $behaviorItem['actions'] : null;
+                //If action not found, ignore rule, otherwise process
+                if($applyToAllActions === true || $actionFound === true) {
+                    //by default, "allow" access as default
+                    $permissionAccess = 'allow';
+                    if (isset($behaviorItem['permission'])) {
+                        if (in_array($behaviorItem['permission'], ['allow', 'deny']))
+                            $permissionAccess = $behaviorItem['permission'];
+                    }
 
-                //by default, give access if not specified the actions
-                $hasAccessFromAction = true;
-                if (is_array($actionList) && count($actionList) > 0) {
-                    $hasAccessFromAction = false;
-                    foreach ($actionList as $actionItem) {
-                        if ($actionItem == '*') {
-                            $hasAccessFromAction = true;
-                            break;
+                    //Step 2: Verify the role accesibility
+                    $applyToAllRoles = false;
+                    $applyToLoggedRoles = false;
+                    $applyToSpecificRole = false;
+                    $userHasRole = false;
+
+                    //obtain list of roles to be give / deny access
+                    $roleList = isset($behaviorItem['roles']) ? $behaviorItem['roles'] : null;
+
+                    if (is_array($roleList) && count($roleList) > 0) {
+                        if (in_array('*', $roleList))
+                            $applyToAllRoles = true;
+                        elseif (in_array('@', $roleList))
+                            $applyToLoggedRoles = true;
+
+                        //if rule is not applicable to all roles or logged in roles, verify that role is found from the list
+                        if($applyToAllRoles === false && $applyToLoggedRoles == false) {
+                            $applyToSpecificRole = true;
+                            foreach ($roleList as $roleItem)
+                                if ($this->hasRole($roleItem)) {
+                                    $userHasRole = true;
+                                    break;
+                                }
                         }
                     }
 
-                    //if * not found, verify if action is on the list
-                    if ($hasAccessFromAction == false)
-                        $hasAccessFromAction = in_array($actionName, $actionList);
-                }
+                    //if a rule is applicable to all rules, verify if permission is allowing or denying
+                    if($applyToAllRoles)
+                        return $permissionAccess == 'allow' ? true : false;
 
-                //obtain list of roles to be give / deny access
-                $roleList = isset($behaviorItem['roles']) ? $behaviorItem['roles'] : null;
-
-                //by default, give access if no role is specified
-                $hasAccessFromRole = true;
-                if (is_array($roleList) && count($roleList) > 0) {
-                    $hasAccessFromRole = false;
-                    $hasAccessFromRoleLoggedIn = false;
-
-                    foreach ($roleList as $roleItem) {
-                        //if is *, has access automatically
-                        if ($roleItem == '*') {
-                            $hasAccessFromRole = true;
-                            break;
-                        } elseif ($roleItem == '@') {
-                            //verifies that user is logged in
-                            $hasAccessFromRole = $this->isLoggedIn();
-                            $hasAccessFromRoleLoggedIn = true;
-                            break;
-                        }
+                    //verify if applies only to logged roles
+                    if($applyToLoggedRoles) {
+                        $userIsLoggedIn = $this->isLoggedIn();
+                        return $permissionAccess == 'allow' ? $userIsLoggedIn : !$userIsLoggedIn;
                     }
 
-                    //if it was not a @ configuration, verify that user has the role from the list
-                    if (($hasAccessFromRole == false) && ($hasAccessFromRoleLoggedIn == false)) {
-                        foreach ($roleList as $roleItem)
-                            if ($this->hasRole($roleItem)) {
-                                $hasAccessFromRole = true;
-                                break;
-                            }
-                    }
+                    if($applyToSpecificRole)
+                        return $permissionAccess == 'allow' ? $userHasRole : !$userHasRole;
                 }
-
-                //depending on the permission access, validate the rule as allow or deny
-                switch ($permissionValue) {
-                    case 'allow':
-                        $globalBehaviorValidator = $hasAccessFromAction && $hasAccessFromRole;
-                        break;
-                    case 'deny':
-                        $globalBehaviorValidator = !($hasAccessFromAction && $hasAccessFromRole);
-                        break;
-                }
-
-                //store validated rule in list
-                array_push($behaviorValidationList, $globalBehaviorValidator);
             }
-
-            //if a rule is positive, return true, ignoring the rest of rules
-            foreach($behaviorValidationList as $behaviorValidationItem)
-                if($behaviorValidationItem == true)
-                    return true;
-
-            //if no rule was accomplished, return false
-            return false;
         }
 
-        //no behavior attached, return true
+        //No behavior attached, return true
         return true;
     }
-
 }

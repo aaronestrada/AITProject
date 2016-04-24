@@ -1,3 +1,6 @@
+<div>
+    <a href="/">Home</a>
+</div>
 <form action="/user/login" method="POST">
     Username
     <input type="text" name="email">

@@ -1,3 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Open Data Storage</title>
+</head>
+<body>
+<div>
+    <?php if (!$this->roleAccess->isLoggedIn()) : ?>
+        <a href="/user/login">Login</a>
+        <a href="/user/register">Register</a>
+    <?php else: ?>
+        <a href="/user/login">My shopping cart</a>
+        <a href="/user/logout">Logout</a>
+    <?php endif; ?>
+</div>
 <div>
     <h1>Lorem ipsum</h1>
     <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
@@ -15,3 +31,5 @@
     <input type="text" name="tags">
     <input type="submit" value="Search">
 </form>
+</body>
+</html>

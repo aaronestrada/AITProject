@@ -19,6 +19,7 @@ class BaseQuery {
     private $parameters = [];
     private $joinConditions = [];
     private $tablePseudonim = '';
+    private $countCondition = false;
 
     public function __construct($tablePseudonim = '') {
         $this->tablePseudonim = $tablePseudonim;
@@ -32,6 +33,21 @@ class BaseQuery {
     public function select($columns = []) {
         $this->queryColumns = ((count($columns) > 0) ? $columns : '');
         return $this;
+    }
+
+    /**
+     * Set count condition
+     */
+    public function count() {
+        $this->countCondition = true;
+    }
+
+    /**
+     * Return whether there is a count condition or not
+     * @return bool
+     */
+    public function getCountCondition() {
+        return $this->countCondition == true ? true : false;
     }
 
     /**
@@ -240,6 +256,9 @@ class BaseQuery {
                 $queryColumns = ($this->tablePseudonim != '' ? $this->tablePseudonim . '.' : '') . '*';
             else
                 $queryColumns = implode(', ', $this->queryColumns);
+
+            if($this->countCondition)
+                $queryColumns = 'COUNT(' . $queryColumns . ') AS query_count_value';
 
             array_push($queryStructure, 'SELECT ' . $queryColumns . ' FROM ' . $this->tableName . ($this->tablePseudonim != '' ? ' ' . $this->tablePseudonim : ''));
 

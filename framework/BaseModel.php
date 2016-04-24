@@ -148,7 +148,7 @@ class BaseModel extends \framework\BaseDB {
      * @param bool $first Obtain only first element
      * @return array|null List of ORM objects
      */
-    private function fetchAllFromQuery($queryText, $queryParams = [], $first = false) {
+    private function fetchAllFromQuery($queryText, $queryParams = [], $first = false, $isCount = false) {
         try {
             //Step 1: prepare query
             $query = $this->prepare($queryText);
@@ -158,6 +158,13 @@ class BaseModel extends \framework\BaseDB {
 
             $query->execute();
             $queryValueList = $query->fetchAll(\PDO::FETCH_ASSOC);
+
+            //verify if is count query
+            if($isCount) {
+                if(isset($queryValueList[0]['query_count_value']))
+                    return $queryValueList[0]['query_count_value'];
+                return 0;
+            }
 
             $fetchObjects = [];
             foreach ($queryValueList as $queryValueItem) {
@@ -218,8 +225,13 @@ class BaseModel extends \framework\BaseDB {
                  * Execute the insertion and store ID value in the primary key field,
                  * so it is still possible to use the object to make any updates
                  */
-                if ($query->execute())
-                    $this->{$this->primaryKey} = $this->lastInsertId();
+                if ($query->execute()) {
+                    if(count($this->primaryKey) == 1) {
+                        $primaryKeyItem = $this->primaryKey[0];
+                        if($this->$primaryKeyItem == null)
+                            $this->$primaryKeyItem = $this->lastInsertId();
+                    }
+                }
             } catch (\PDOException $e) {
                 \framework\BaseError::throwMessage(404, 'Error on inserting data: ' . $e->getMessage());
             }
@@ -274,7 +286,7 @@ class BaseModel extends \framework\BaseDB {
         
         $queryText = $queryObject->constructQuery();
         $queryParams = $queryObject->getParameters();
-        return $this->fetchAllFromQuery($queryText, $queryParams);
+        return $this->fetchAllFromQuery($queryText, $queryParams, false, $queryObject->getCountCondition());
     }
 
     /**

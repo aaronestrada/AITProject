@@ -75,13 +75,28 @@ class BaseController {
     }
 
     /**
+     * Set variable for layout
+     * @param $variableName Variable name
+     * @param $variableValue Value for the variable
+     */
+    public function setLayoutVariable($variableName, $variableValue) {
+        $this->view->setLayoutVariable($variableName, $variableValue);
+    }
+
+    /**
      * Render specified view
      * @param $view View name
      * @param array $params List of parameters sent to the view
      */
     public function render($view, $params = []) {
+        $frameworkVariables = [
+            'request' => $this->request,
+            'session' => $this->session,
+            'roleAccess' => $this->roleAccess
+        ];
+
         $controllerViewFolder = strtolower(str_replace('controllers\\', '', str_replace('Controller', '', get_class($this))));
-        $this->view->render($controllerViewFolder, $view, $params);
+        $this->view->render($controllerViewFolder, $view, $params, $frameworkVariables);
     }
 
     /**

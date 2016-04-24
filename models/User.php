@@ -2,6 +2,7 @@
 namespace models;
 use framework\BaseEncryption;
 use \framework\BaseModel;
+use framework\BaseQuery;
 
 class User extends BaseModel {
     protected $primaryKey = ['id'];
@@ -47,5 +48,37 @@ class User extends BaseModel {
         $passwordValue = $encryption->decrypt($this->password, $this->password_iv);
 
         return $passwordValue == $password ? true : false;
+    }
+
+    /**
+     * Get all the documents associated to a user
+     * @return array|null
+     */
+    public function getDocumentsInCart() {
+        if($this->id != null) {
+            $userDocumentCartQuery = new BaseQuery();
+            $userDocumentCartQuery->select()
+                ->andWhere(['user_id' => $this->id]);
+
+            $objUserDocumentCart = new UserDocumentCart();
+            $documentCartList = $objUserDocumentCart->queryAllFromObject($userDocumentCartQuery);
+
+            if($documentCartList != null) {
+                $documentItems = [];
+                foreach($documentCartList as $documentCartItem)
+                    array_push($documentItems, $documentCartItem->document_id);
+
+                $documentQuery = new BaseQuery();
+                $documentQuery->select()->
+                    andInWhere('id', $documentItems);
+
+                $objDocument = new Document();
+                $documentList = $objDocument->queryAllFromObject($documentQuery);
+
+                if($documentList != null)
+                    return $documentList;
+            }
+        }
+        return [];
     }
 }

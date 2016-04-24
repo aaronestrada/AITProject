@@ -7,13 +7,23 @@ use models\Tag;
 
 class UserController extends \framework\BaseController {
 
+    public function behavior() {
+        return [
+            [
+                'permission' => 'allow',
+                'actions' => ['cart'],
+                'roles' => ['@']
+            ]
+        ];
+    }
+
     /**
      * Action executed to show login form
      */
     public function actionLogin() {
         //Step 0: verify that user is not logged in to process login action
         if($this->roleAccess->isLoggedIn())
-            $this->redirect('tag/index');
+            $this->redirect('site/index');
 
         //Step 1: Verify if user has made a POST request to obtain parameters
         if($this->request->isPostRequest()) {
@@ -47,7 +57,7 @@ class UserController extends \framework\BaseController {
                     $this->roleAccess->login(['user']);
 
                     //Step 9: Redirect to another page
-                    $this->redirect('tag/index');
+                    $this->redirect('site/index');
                 }
             }
         }
@@ -58,6 +68,60 @@ class UserController extends \framework\BaseController {
 
     public function actionLogout() {
         $this->roleAccess->logout();
-        $this->redirect('user/login');
+        $this->redirect('site/index');
+    }
+
+    public function actionRegister() {
+        if($this->roleAccess->isLoggedIn())
+            $this->redirect('site/index');
+
+        $errorList = [];
+        if($this->request->isPostRequest()) {
+            $email = $this->request->getParameter('email');
+            $firstname = $this->request->getParameter('firstname');
+            $lastname = $this->request->getParameter('lastname');
+            $password = $this->request->getParameter('password');
+            $confirmPassword = $this->request->getParameter('confirm-password');
+            $birthdate = $this->request->getParameter('birthdate');
+
+            $userEmailCountQuery = new BaseQuery();
+            $userEmailCountQuery->select()
+                ->andWhere(['email' => $email])
+                ->count();
+
+            $objUserEmail = new User();
+            $userEmailCount = $objUserEmail->queryAllFromObject($userEmailCountQuery);
+
+            if($password != $confirmPassword)
+                array_push($errorList, 'password_mismatch');
+
+            if($userEmailCount != 0)
+                array_push($errorList, 'user_already_exists');
+
+            if(count($errorList) == 0) {
+                $objUser = new User();
+                $objUser->firstname = $firstname;
+                $objUser->firstname = $lastname;
+                $objUser->birthdate = $birthdate;
+                $objUser->email = $email;
+                $objUser->setPassword($password);
+                $objUser->insert();
+            }
+        }
+
+        $this->render('register', ['errorList' => $errorList]);
+    }
+
+    public function actionCart() {
+        $userId = $this->roleAccess->getProperty('id');
+
+        $objUser = new User();
+        $objUser = $objUser->fetchOne($userId);
+
+        $documentList = [];
+        if($objUser != null)
+            $documentList = $objUser->getDocumentsInCart();
+
+        $this->render('cart', ['documentList' => $documentList]);
     }
 }

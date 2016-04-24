@@ -3,7 +3,6 @@
 namespace controllers;
 
 use framework\BaseQuery;
-use framework\BaseRoleAccess;
 use models\Document;
 
 class SiteController extends \framework\BaseController {
@@ -23,6 +22,7 @@ class SiteController extends \framework\BaseController {
      * Show initial page
      */
     public function actionIndex() {
+        $this->hasLayout(false);
         $this->render('index');
     }
 
