@@ -12,14 +12,18 @@ namespace framework;
 class BaseRequest {
     private $parameters;
     private $isPost;
+    private $isAjax;
 
     /**
      * BaseRequest constructor.
      * @param array $parameters List of parameters to be stored in class
+     * @param bool $isPost if is a POST request
+     * @param bool $isAjax if is an AJAX request
      */
-    public function __construct($parameters = [], $isPost = false) {
+    public function __construct($parameters = [], $isPost = false, $isAjax = false) {
         $this->parameters = $parameters;
         $this->isPost = $isPost === true ? true : false;
+        $this->isAjax = $isAjax === true ? true : false;
     }
 
     /**
@@ -39,5 +43,13 @@ class BaseRequest {
      */
     public function isPostRequest() {
         return $this->isPost;
+    }
+
+    /**
+     * Obtain whether the request made was by AJAX or not
+     * @return bool TRUE if is AJAX request
+     */
+    public function isAjaxRequest() {
+        return $this->isAjax;
     }
 }

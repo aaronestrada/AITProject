@@ -81,6 +81,9 @@ class BaseRoleAccess {
                 $session->remove($roleAccessSessionName);
                 $roleSessionStorage = new BaseRoleAccess($session);
             }
+            else
+                //Since user is already logged in, the session time must be updated
+                $roleSessionStorage->renewSessionLoginTime();
         }
         else
             $roleSessionStorage = new BaseRoleAccess($session); //call to constructor
@@ -149,13 +152,28 @@ class BaseRoleAccess {
      */
     public function login($roleList = []) {
         //set login session time
-        $this->sessionLogin = time();
+        $this->setSessionLoginTime();
 
         //assign roles to logged user
         foreach($roleList as $roleItem)
             $this->addRole($roleItem);
 
         //store role access object into session
+        $this->storeRoleAccess();
+    }
+
+    /**
+     * Set session login time
+     */
+    private function setSessionLoginTime() {
+        $this->sessionLogin = time();
+    }
+
+    /**
+     * Update session time and store it on BaseSession object
+     */
+    private function renewSessionLoginTime() {
+        $this->setSessionLoginTime();
         $this->storeRoleAccess();
     }
 

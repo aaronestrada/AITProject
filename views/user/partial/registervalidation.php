@@ -6,6 +6,8 @@
             case 'error_email_already_exists': ?>
                 <div>E-mail is already taken</div>
                 <?php break;
+            case 'error_email_invalid': ?>
+                <div>E-mail is invalid</div>
             case 'error_firstname_empty': ?>
                 <div>First name is empty</div>
                 <?php break;
@@ -20,6 +22,9 @@
                 <?php break;
             case 'error_passwords_do_not_match': ?>
                 <div>Passwords do not match</div>
+                <?php break;
+            case 'error_birthdate_invalid': ?>
+                <div>Birth date is invalid</div>
                 <?php break;
         endswitch;
     endforeach; ?>

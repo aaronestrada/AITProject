@@ -9,23 +9,29 @@ namespace framework;
  * @package framework
  */
 class BaseApplication {
-    private $isPost;
+    private $isPost = false;
+    private $isAjax = false;
     private $requestParameters;
     private $environment;
 
     /**
      * Class constructor
-     * Verifies request type: POST or GET
+     * Verifies request type: POST or GET and AJAX
      * Set variables in $requestParameters list
      *
      * @param string $environment Environment to set the application
      */
     public function __construct($environment = 'dev') {
+        //verify if request is POST
         if (count($_POST) > 0) {
             $this->isPost = true;
             foreach ($_POST as $param => $value)
                 $this->requestParameters[$param] = $value;
         }
+
+        //verify if request is AJAX
+        if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            $this->isAjax = true;
 
         $this->environment = in_array($environment, ['dev', 'prd']) ? $environment : 'dev';
     }
@@ -143,7 +149,7 @@ class BaseApplication {
 
                     //Step 10: save request parameters in BaseRequest class
                     if (count($this->requestParameters) > 0)
-                        $controller->setRequest(new BaseRequest($this->requestParameters, $this->isPost));
+                        $controller->setRequest(new BaseRequest($this->requestParameters, $this->isPost, $this->isAjax));
 
                     //Step 11: Invoke action from controller
                     $controller->$actionName();
