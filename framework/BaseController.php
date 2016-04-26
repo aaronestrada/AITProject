@@ -87,16 +87,30 @@ class BaseController {
      * Render specified view
      * @param $view View name
      * @param array $params List of parameters sent to the view
+     * @param bool $outputContent Define wheter to render the output view or not
+     * @return Rendered view content
      */
-    public function render($view, $params = []) {
+    public function render($view, $params = [], $outputContent = true) {
         $frameworkVariables = [
             'request' => $this->request,
             'session' => $this->session,
-            'roleAccess' => $this->roleAccess
+            'roleAccess' => $this->roleAccess,
+            'view' => $this->view
         ];
 
         $controllerViewFolder = strtolower(str_replace('controllers\\', '', str_replace('Controller', '', get_class($this))));
-        $this->view->render($controllerViewFolder, $view, $params, $frameworkVariables);
+        
+        //Get view content
+        $renderedContent = $this->view->render($controllerViewFolder, $view, $params, $frameworkVariables);
+
+        //if render output, echo and stop the application
+        if($outputContent === true) {
+            echo $renderedContent;
+            exit();
+        }
+
+        //Otherwise, return string of rendered view
+        return $renderedContent;
     }
 
     /**

@@ -18,6 +18,10 @@ class BaseView {
 
     private $layoutVariables;
 
+    private $cssFiles = [];
+    private $jsStartFiles = [];
+    private $jsEndFiles = [];
+
     public function __construct($layoutName = 'main') {
         $this->layoutName = $layoutName;
         $this->hasLayout = (trim($layoutName) !== '');
@@ -53,6 +57,8 @@ class BaseView {
      * Render layout with obtained content
      * @param $viewContent Content obtained
      * @param array $params Params sent to layout
+     * @param array $frameworkVariables List of framework variables to be used inside the layouts
+     * @return Rendered content
      */
     public function renderLayout($viewContent, $params = [], $frameworkVariables = []) {
         if($this->hasLayout === true) {
@@ -69,7 +75,18 @@ class BaseView {
 
                 //set layout content and include file
                 $layoutContent = $viewContent;
+
+                /**
+                 * Include the layout view.  The content of the sent view is stored in the variable $layoutContent
+                 * which has to be included inside each layout file to be displayed correctly.
+                 * As last step, return the rendered content from the output streaming (ob_start and ob_end_clean).
+                 *
+                 * If the variable is displayed on screen or stored as variable is checked outside this method.
+                 */
+                ob_start();
                 include_once('../' . $layoutPathFile);
+                $layoutViewContent = ob_get_contents();
+                ob_end_clean();
 
                 unset($layoutContent);
                 foreach($params as $paramItem => $value)
@@ -78,13 +95,12 @@ class BaseView {
                 //Unset framework variables from the view
                 foreach(array_keys($frameworkVariables) as $variableItem)
                     unset($this->$variableItem);
+
+                return $layoutViewContent;
             } else
                 \framework\BaseError::throwMessage(404, 'Layout ' . $this->layoutName . ' does not exist');             
         }
-        else echo $viewContent;
-
-        //After rendering layout, end application
-        exit();
+        else return $viewContent;
     }
 
     /**
@@ -92,6 +108,8 @@ class BaseView {
      * @param $controller Controller name
      * @param $view View name
      * @param array $params List of parameters sent to the view
+     * @param array $frameworkVariables List of framework set variables to be used inside the views / layouts
+     * @return rendered content
      */
     public function render($controller, $view, $params = [], $frameworkVariables = []) {
         $viewPathFile = 'views/' . $controller . '/' . $view . '.php';
@@ -124,10 +142,65 @@ class BaseView {
                 unset($this->$variableItem);
 
             //render layout with view content
-            $this->renderLayout($viewContent, $this->layoutVariables, $frameworkVariables);
+            return $this->renderLayout($viewContent, $this->layoutVariables, $frameworkVariables);
         }
         else
             \framework\BaseError::throwMessage(404, 'View ' . $controller . '/' . $view . ' does not exist');
     }
 
+    /**
+     * Add a JS script file for displaying it into views or layouts
+     * @param $scriptFile Script file path (local or global)
+     * @param int $jsPosition Position to store de JS (START or END)
+     */
+    public function addScript($scriptFile, $jsPosition = JS_POSITION_END) {
+        if(!in_array($jsPosition, [JS_POSITION_START, JS_POSITION_END]))
+            $jsPosition = JS_POSITION_END;
+
+        switch($jsPosition) {
+            case JS_POSITION_START:
+                if(!in_array($scriptFile, $this->jsStartFiles))
+                    array_push($this->jsStartFiles, $scriptFile);
+                break;
+            case JS_POSITION_END:
+                if(!in_array($scriptFile, $this->jsEndFiles))
+                    array_push($this->jsEndFiles, $scriptFile);
+                break;
+        }
+    }
+
+    /**
+     * Get list of JS scripts, given a position
+     * @param int $jsPosition Position of list to return
+     * @return array List of set JS scripts
+     */
+    public function getScripts($jsPosition = JS_POSITION_END) {
+        switch($jsPosition) {
+            case JS_POSITION_START:
+                return $this->jsStartFiles;
+                break;
+            case JS_POSITION_END:
+                return $this->jsEndFiles;
+                break;
+        }
+        return [];
+    }
+
+    /**
+     * Add a CSS file to be included in views or layouts
+     * @param $cssFile CSS script file path (global or local)
+     */
+    public function addCSSScript($cssFile) {
+        if(!in_array($cssFile, $this->cssFiles))
+            array_push($this->cssFiles, $cssFile);
+    }
+
+    /**
+     * Return list of CSS script files
+     * @return array List of CSS files
+     */
+    public function getCSSScripts() {
+        return $this->cssFiles;
+    }
+    
 }

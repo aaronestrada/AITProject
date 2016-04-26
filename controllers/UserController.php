@@ -52,6 +52,7 @@ class UserController extends \framework\BaseController {
                     $this->roleAccess->setProperty('id', $objUser->id);
                     $this->roleAccess->setProperty('firstname', $objUser->firstname);
                     $this->roleAccess->setProperty('lastname', $objUser->lastname);
+                    $this->roleAccess->setProperty('email', $objUser->email);
 
                     //Step 8: Login user
                     $this->roleAccess->login(['user']);
@@ -110,6 +111,71 @@ class UserController extends \framework\BaseController {
         }
 
         $this->render('register', ['errorList' => $errorList]);
+    }
+
+    public function actionValidateregister() {
+        $errorList = [];
+        $resultData = ['status' => 'ok'];
+        $errorInCall = false;
+
+        if($this->request->isPostRequest()) {
+            $email = trim($this->request->getParameter('email'));
+
+            if($email == '')
+                array_push($errorList, 'error_email_empty');
+            else {
+                $userEmailCountQuery = new BaseQuery();
+                $userEmailCountQuery->select()
+                    ->andWhere(['email' => $email])
+                    ->count();
+
+                $objUserEmail = new User();
+                $userEmailCount = $objUserEmail->queryAllFromObject($userEmailCountQuery);
+
+                if ($userEmailCount > 0)
+                    array_push($errorList, 'error_email_already_exists');
+            }
+
+            $firstname = trim($this->request->getParameter('firstname'));
+            if($firstname == '')
+                array_push($errorList, 'error_firstname_empty');
+
+            $lastname = trim($this->request->getParameter('lastname'));
+            if($lastname == '')
+                array_push($errorList, 'error_lastname_empty');
+
+            $password = $this->request->getParameter('password');
+            $confirmPassword = $this->request->getParameter('confirm-password');
+
+            if($password == '')
+                array_push($errorList, 'error_password_empty');
+
+            if($confirmPassword == '')
+                array_push($errorList, 'error_confirm-password_empty');
+
+            if(($password != '') && ($confirmPassword != '') && ($password != $confirmPassword))
+                array_push($errorList, 'error_passwords_do_not_match');
+
+            $birthdate = trim($this->request->getParameter('birthdate'));
+        }
+        else {
+            $result = ['status' => 'error'];
+            $errorInCall = true;
+        }
+
+        if($errorInCall)
+            return $result;
+
+        if(count($errorList) > 0) {
+            $this->hasLayout(false);
+
+            $resultData['status'] = 'error';
+            $resultData['alertHtml'] = $this->render('partial/registervalidation', ['errorList' => $errorList], false);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($resultData);
+        exit();
     }
 
     public function actionCart() {

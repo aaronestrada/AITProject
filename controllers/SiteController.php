@@ -22,7 +22,6 @@ class SiteController extends \framework\BaseController {
      * Show initial page
      */
     public function actionIndex() {
-        $this->hasLayout(false);
         $this->render('index');
     }
 

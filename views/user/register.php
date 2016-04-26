@@ -1,4 +1,6 @@
-<form action="/user/register" method="POST">
+<?php $this->view->addScript('/js/user/register.js'); ?>
+<div id="message"></div>
+<form action="/user/register" method="POST" id="registerForm">
     E-mail:
     <input type="email" name="email" maxlength="150" required>
 
@@ -17,7 +19,5 @@
     Birth date:
     <input type="date" name="birthdate" maxlength="10" required>
 
-    <input type="submit" value="Register">
+    <input type="submit" value="Register" id="registerSubmit">
 </form>
-
-<?php print_r($errorList); ?>

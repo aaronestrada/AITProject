@@ -1,3 +1,4 @@
+<?php $this->view->addScript('/js/cart.js'); ?>
 <?php foreach($documentList as $documentItem) : ?>
     <div>
         <div>Name: <?php echo $documentItem->name; ?></div>
