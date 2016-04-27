@@ -1,12 +1,13 @@
 <?php
 
 namespace controllers;
+use framework\BaseController;
 use framework\BaseQuery;
 use libs\JSONProcess;
 use libs\Validations;
 use models\User;
 
-class UserController extends \framework\BaseController {
+class UserController extends BaseController {
 
     public function behavior() {
         return [

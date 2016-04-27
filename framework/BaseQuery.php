@@ -252,13 +252,14 @@ class BaseQuery {
             //Step 1: construct SELECT
             $queryStructure = [];
 
-            if($this->queryColumns == '')
-                $queryColumns = ($this->tablePseudonim != '' ? $this->tablePseudonim . '.' : '') . '*';
-            else
-                $queryColumns = implode(', ', $this->queryColumns);
-
             if($this->countCondition)
-                $queryColumns = 'COUNT(' . $queryColumns . ') AS query_count_value';
+                $queryColumns = 'COUNT(*) AS query_count_value';
+            else {
+                if ($this->queryColumns == '')
+                    $queryColumns = ($this->tablePseudonim != '' ? $this->tablePseudonim . '.' : '') . '*';
+                else
+                    $queryColumns = implode(', ', $this->queryColumns);
+            }
 
             array_push($queryStructure, 'SELECT ' . $queryColumns . ' FROM ' . $this->tableName . ($this->tablePseudonim != '' ? ' ' . $this->tablePseudonim : ''));
 

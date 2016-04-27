@@ -8,6 +8,7 @@
                 <?php break;
             case 'error_email_invalid': ?>
                 <div>E-mail is invalid</div>
+                <?php break;
             case 'error_firstname_empty': ?>
                 <div>First name is empty</div>
                 <?php break;

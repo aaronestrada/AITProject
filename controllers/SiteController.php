@@ -2,10 +2,12 @@
 
 namespace controllers;
 
+use framework\BaseController;
 use framework\BaseQuery;
 use models\Document;
+use models\User;
 
-class SiteController extends \framework\BaseController {
+class SiteController extends BaseController {
     /*
     public function behavior() {
         return [
@@ -31,6 +33,7 @@ class SiteController extends \framework\BaseController {
     public function actionSearch() {
         $searchText = trim($this->request->getParameter('searchtext'));
         $tags = trim($this->request->getParameter('tags'));
+        $userLoggedIn = $this->roleAccess->isLoggedIn();
 
         //Verify if request has at least one of the form fields to make the search in this page
         if (($searchText != '') || ($tags != '')) {
@@ -65,11 +68,27 @@ class SiteController extends \framework\BaseController {
             $objDocument = new Document();
             $documentList = $objDocument->queryAllFromObject($documentQuery);
 
+            //Obtain list of documents added to the cart and purchased documents for a user
+            $documentsInCart = [];
+            $purchasedDocuments = [];
+            if($userLoggedIn) {
+                $objUser = new User();
+                $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
+
+                if($objUser != null) {
+                    $documentsInCart = $objUser->getDocumentCartItems();
+                    $purchasedDocuments = $objUser->getPurchasedDocumentItems();
+                }
+            }
+
             //Show results in view "search"
             $this->render('search', [
                 'searchText' => $searchText,
                 'tags' => $tags,
-                'documentList' => $documentList != null ? $documentList : []
+                'documentList' => $documentList != null ? $documentList : [],
+                'documentsInCart' => $documentsInCart,
+                'purchasedDocuments' => $purchasedDocuments,
+                'userLoggedIn' => $userLoggedIn
             ]);
         } else
             //if no parameters are found, redirect to the index page

@@ -16,8 +16,8 @@
         <a href="/user/login">Login</a>
         <a href="/user/register">Register</a>
     <?php else: ?>
-        <a href="/user/login">My shopping cart</a>
-        <a href="/user/logout">Logout (<?php echo $this->roleAccess->getProperty('email'); ?>)</a>
+        <a href="/user/cart">My shopping cart</a>
+        <a href="/user/logout">Logout (<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>)</a>
     <?php endif; ?>
 </div>
 <?php echo $layoutContent; ?>
