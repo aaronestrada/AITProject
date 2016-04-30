@@ -309,13 +309,28 @@ class BaseModel extends \framework\BaseDB {
      */
     public function delete() {
         try {
-            //Verifies that primary key value is not empty to make the update
-            if ($this->{$this->primaryKey} != '') {
-                //create update string
-                $queryString = 'DELETE FROM  ' . $this->tableName . ' WHERE ' . $this->primaryKey . ' = :' . $this->primaryKey;
+            $primaryKeyEmpty = false;
+            foreach($this->primaryKey as $primaryKeyItem)
+                if ($this->$primaryKeyItem == '') {
+                    $primaryKeyEmpty = true;
+                    break;
+                }
 
+            //Verifies that primary key value is not empty to make the update
+            if ($primaryKeyEmpty == false) {
+
+                $wherePrimaryKey = [];
+                foreach ($this->primaryKey as $primaryKeyItem)
+                    array_push($wherePrimaryKey, $primaryKeyItem . ' = :' . $primaryKeyItem);
+
+                //create delete string
+                $queryString = 'DELETE FROM  ' . $this->tableName . ' WHERE ' . implode(' AND ', $wherePrimaryKey);
                 $query = $this->prepare($queryString);
-                $query->bindValue(':' . $this->primaryKey, $this->{$this->primaryKey});
+
+                //prepare key values
+                foreach ($this->primaryKey as $primaryKeyItem)
+                    $query->bindValue(':' . $primaryKeyItem, $this->$primaryKeyItem, $this->getPDOType(isset($this->fields[$primaryKeyItem]) ? $this->fields[$primaryKeyItem] : ''));
+
                 if ($query->execute()) {
                     //unset values
                     foreach (array_keys($this->fields) as $fieldItem)

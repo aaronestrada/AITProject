@@ -82,16 +82,18 @@ class User extends BaseModel {
         if($this->id != null) {
             $documentItems = $this->getDocumentCartItems();
 
-            //Create new query: SELECT * FROM document WHERE id IN [<document_list>]
-            $documentQuery = new BaseQuery();
-            $documentQuery->select()->
-                andInWhere('id', $documentItems);
+            if(count($documentItems) > 0) {
+                //Create new query: SELECT * FROM document WHERE id IN [<document_list>]
+                $documentQuery = new BaseQuery();
+                $documentQuery->select()
+                    ->andInWhere('id', $documentItems);
 
-            $objDocument = new Document();
-            $documentList = $objDocument->queryAllFromObject($documentQuery);
+                $objDocument = new Document();
+                $documentList = $objDocument->queryAllFromObject($documentQuery);
 
-            if($documentList != null)
-                return $documentList;
+                if ($documentList != null)
+                    return $documentList;
+            }
         }
         return [];
     }

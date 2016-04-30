@@ -8,17 +8,6 @@ use libs\Validations;
 use models\User;
 
 class UserController extends BaseController {
-
-    public function behavior() {
-        return [
-            [
-                'permission' => 'allow',
-                'actions' => ['cart'],
-                'roles' => ['@']
-            ]
-        ];
-    }
-
     /**
      * Action executed to show login form
      */
@@ -184,18 +173,5 @@ class UserController extends BaseController {
 
         JSONProcess::returnJsonOutput($resultData);
         exit();
-    }
-
-    public function actionCart() {
-        $userId = $this->roleAccess->getProperty('id');
-
-        $objUser = new User();
-        $objUser = $objUser->fetchOne($userId);
-
-        $documentList = [];
-        if($objUser != null)
-            $documentList = $objUser->getDocumentsInCart();
-
-        $this->render('cart', ['documentList' => $documentList]);
     }
 }

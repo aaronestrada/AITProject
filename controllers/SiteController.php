@@ -4,21 +4,24 @@ namespace controllers;
 
 use framework\BaseController;
 use framework\BaseQuery;
+use framework\BaseSession;
 use models\Document;
+use models\PurchaseDocument;
 use models\User;
+use models\UserDocumentCart;
 
 class SiteController extends BaseController {
-    /*
+
     public function behavior() {
         return [
             [
                 'permission' => 'allow',
-                'actions' => ['*'],
+                'actions' => ['cart', 'checkout'],
                 'roles' => ['@']
             ]
         ];
     }
-    */
+
 
     /**
      * Show initial page
@@ -81,10 +84,13 @@ class SiteController extends BaseController {
                 }
             }
 
+            //Store search field values in session
+            $objSession = new BaseSession();
+            $objSession->set('searchQuery', ['searchText' => $searchText, 'tags' => $tags]);
+
             //Show results in view "search"
+            $this->setLayout('main_search');
             $this->render('search', [
-                'searchText' => $searchText,
-                'tags' => $tags,
                 'documentList' => $documentList != null ? $documentList : [],
                 'documentsInCart' => $documentsInCart,
                 'purchasedDocuments' => $purchasedDocuments,
@@ -102,12 +108,94 @@ class SiteController extends BaseController {
             $documentItem = new Document();
             $documentItem = $documentItem->fetchOne($documentId);
             if($documentItem !== null) {
+                $documentInCartCount = 0;
+                $documentPurchaseCount = 0;
+
+                $userLoggedIn = $this->roleAccess->isLoggedIn();
+                if($userLoggedIn) {
+                    $objUser = new User();
+                    $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
+
+                    if($objUser != null) {
+                        $userId = $objUser->id;
+                        /**
+                         * Verify if document is already added in cart
+                         * Query:
+                         * SELECT COUNT(*) FROM user_document_cart
+                         * WHERE document_id = <document_id>
+                         * AND user_id = <user_id>;
+                         */
+                        $documentCartQuery = new BaseQuery();
+                        $documentCartQuery->select()
+                            ->andWhere(['document_id' => $documentId, 'user_id' => $userId])
+                            ->count();
+
+                        $objDocumentCart = new UserDocumentCart();
+                        $documentInCartCount = $objDocumentCart->queryAllFromObject($documentCartQuery);
+
+                        if($documentInCartCount == 0) {
+                            $documentPurchaseQuery = new BaseQuery('pr_doc');
+                            $documentPurchaseQuery->select()
+                                ->join('purchase', 'purch', ['purch.id = pr_doc.purchase_id'])
+                                ->andWhere(['pr_doc.document_id' => $documentId, 'purch.user_id' => $userId])
+                                ->count();
+
+                            $objPurchaseDocument = new PurchaseDocument();
+                            $documentPurchaseCount = $objPurchaseDocument->queryAllFromObject($documentPurchaseQuery);
+                        }
+                    }
+                }
+
+                $this->setLayout('main_search');
                 $this->render('overview', [
-                    'documentItem' => $documentItem
+                    'documentItem' => $documentItem,
+                    'userLoggedIn' => $userLoggedIn,
+                    'isDocumentInCart' => $documentInCartCount != 0 ? true : false,
+                    'isDocumentPurchased' => $documentPurchaseCount != 0 ? true : false
                 ]);
             }
         }
         $this->redirect('site/index');
 
+    }
+
+    /**
+     * Get documents in cart added by logged in user
+     * @return array List of documents
+     */
+    private function getDocumentsInCart() {
+        $userId = $this->roleAccess->getProperty('id');
+
+        $objUser = new User();
+        $objUser = $objUser->fetchOne($userId);
+
+        $documentList = [];
+        if($objUser != null)
+            $documentList = $objUser->getDocumentsInCart();
+
+        return $documentList;
+    }
+
+    /**
+     * Show user shopping cart
+     */
+    public function actionCart() {
+        $documentList = $this->getDocumentsInCart();
+
+        $this->setLayout('main_search');
+        $this->render('cart', ['documentList' => $documentList]);
+    }
+
+    /**
+     * Show checkout page
+     */
+    public function actionCheckout() {
+        $documentList = $this->getDocumentsInCart();
+
+        //if documents in cart, show page, otherwise redirect to search page
+        if(count($documentList) > 0)
+            $this->render('checkout', ['documentList' => $documentList]);
+        else
+            $this->redirect('site/index');
     }
 }
