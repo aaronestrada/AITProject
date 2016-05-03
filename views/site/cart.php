@@ -10,7 +10,8 @@
                 <?php endforeach; ?></div>
             <input type="button" value="Remove from cart" class="cartButton" data-id="<?php echo $documentId; ?>">
         </div>
-    <?php endforeach;
-else :?>
+    <?php endforeach; ?>
+    <a href="/site/checkout">Proceed to checkout</a>
+<?php else :?>
     <div>No items added yet!</div>
 <?php endif; ?>

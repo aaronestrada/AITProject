@@ -33,6 +33,7 @@ class DocumentController extends BaseController {
     public function actionTogglecart() {
         $errorList = [];
         $resultData = ['status' => 'error'];
+        $toggleAction = null;
         if ($this->request->isAjaxRequest() && $this->request->isPostRequest()) {
             $userId = $this->roleAccess->getProperty('id');
 

@@ -129,7 +129,8 @@ class BaseModel extends \framework\BaseDB {
 
                     //store field values in class object
                     foreach (array_keys($this->fields) as $fieldItem)
-                        $baseObject->$fieldItem = $queryValueList[$fieldItem];
+                        if(isset($queryValueList[$fieldItem]))
+                            $baseObject->$fieldItem = $queryValueList[$fieldItem];
 
                     return $baseObject;
                 }
@@ -174,7 +175,8 @@ class BaseModel extends \framework\BaseDB {
 
                 //Set fields for new BaseModel object
                 foreach (array_keys($this->fields) as $fieldItem)
-                    $baseObject->$fieldItem = $queryValueItem[$fieldItem];
+                    if(isset($queryValueItem[$fieldItem]))
+                        $baseObject->$fieldItem = $queryValueItem[$fieldItem];
 
                 if($first === true)
                     return $baseObject;
@@ -230,12 +232,15 @@ class BaseModel extends \framework\BaseDB {
                         $primaryKeyItem = $this->primaryKey[0];
                         if($this->$primaryKeyItem == null)
                             $this->$primaryKeyItem = $this->lastInsertId();
+
+                        return true;
                     }
                 }
             } catch (\PDOException $e) {
                 \framework\BaseError::throwMessage(404, 'Error on inserting data: ' . $e->getMessage());
             }
         }
+        return false;
     }
 
     /**
