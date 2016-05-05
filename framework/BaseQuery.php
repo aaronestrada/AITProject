@@ -20,6 +20,7 @@ class BaseQuery {
     private $joinConditions = [];
     private $tablePseudonim = '';
     private $countCondition = false;
+    private $distinctCondition = false;
 
     public function __construct($tablePseudonim = '') {
         $this->tablePseudonim = $tablePseudonim;
@@ -40,6 +41,15 @@ class BaseQuery {
      */
     public function count() {
         $this->countCondition = true;
+        return $this;
+    }
+
+    /**
+     * Set distinct condition
+     */
+    public function distinct() {
+        $this->distinctCondition = true;
+        return $this;
     }
 
     /**
@@ -261,7 +271,11 @@ class BaseQuery {
                     $queryColumns = implode(', ', $this->queryColumns);
             }
 
-            array_push($queryStructure, 'SELECT ' . $queryColumns . ' FROM ' . $this->tableName . ($this->tablePseudonim != '' ? ' ' . $this->tablePseudonim : ''));
+            $distinctCondition = '';
+            if($this->distinctCondition)
+                $distinctCondition = 'DISTINCT ';
+
+            array_push($queryStructure, 'SELECT ' . $distinctCondition . $queryColumns . ' FROM ' . $this->tableName . ($this->tablePseudonim != '' ? ' ' . $this->tablePseudonim : ''));
 
             if(count($this->joinConditions) > 0)
                 foreach($this->joinConditions as $joinItem) {
@@ -273,18 +287,18 @@ class BaseQuery {
                 }
 
             //Step 2: construct WHERE
-            if(count($this->whereConditions) > 0) {
-                $whereList = [];
-                $firstCondition = true;
+            $whereList = [];
+            $firstCondition = true;
 
+            if(count($this->whereConditions) > 0) {
                 //Step 2.1: Construct WHERE conditions
                 foreach ($this->whereConditions as $conditionBlock) {
                     $conditionOperator = trim(strtoupper($conditionBlock['operator']));
                     $conditionComparison = trim(strtoupper($conditionBlock['comparison']));
 
-                    if((in_array($conditionOperator, ['AND', 'OR'])) && (in_array($conditionComparison, ['=', '<>', '>', '<', 'LIKE', 'IN']))) {
+                    if ((in_array($conditionOperator, ['AND', 'OR'])) && (in_array($conditionComparison, ['=', '<>', '>', '<', 'LIKE', 'IN']))) {
                         $conditionWhere = [];
-                        foreach($conditionBlock['conditions'] as $conditionItem => $conditionValue) {
+                        foreach ($conditionBlock['conditions'] as $conditionItem => $conditionValue) {
                             array_push($conditionWhere,
                                 $conditionItem .
                                 ' ' .
@@ -293,13 +307,13 @@ class BaseQuery {
                                 $this->getBindParameterName($conditionItem)
                             );
 
-                            if($conditionComparison == 'LIKE')
+                            if ($conditionComparison == 'LIKE')
                                 $conditionValue = '%' . $conditionValue . '%';
 
                             $this->setParameter($conditionItem, $conditionValue);
                         }
 
-                        if($firstCondition) {
+                        if ($firstCondition) {
                             $conditionOperator = '';
                             $firstCondition = false;
                         }
@@ -307,34 +321,36 @@ class BaseQuery {
                         array_push($whereList, $conditionOperator . '(' . implode(' ' . $insideComparison . ' ', $conditionWhere) . ')');
                     }
                 }
+            }
 
-                //Step 2.2: Construct IN conditions
-                foreach($this->inWhereConditions as $inConditionBlock) {
-                    $conditionField = $inConditionBlock['field'];
-                    $conditionList = $inConditionBlock['list'];
-                    $conditionOperator = trim(strtoupper($inConditionBlock['operator']));
+            //Step 2.2: Construct IN conditions
+            foreach($this->inWhereConditions as $inConditionBlock) {
+                $conditionField = $inConditionBlock['field'];
+                $conditionList = $inConditionBlock['list'];
+                $conditionOperator = trim(strtoupper($inConditionBlock['operator']));
 
-                    if(in_array($conditionOperator, ['AND', 'OR'])) {
-                        $counter = 0;
-                        if(is_array($conditionList)) {
-                            $inWhereList = [];
-                            foreach($conditionList as $conditionValue) {
-                                array_push($inWhereList, $conditionField . ' = :' . $this->getBindParameterName($conditionField .$counter));
-                                $this->setParameter($conditionField .$counter, $conditionValue);
-                                $counter++;
-                            }
-
-                            if($firstCondition) {
-                                $conditionOperator = '';
-                                $firstCondition = false;
-                            }
-                            array_push($whereList, $conditionOperator . '(' . implode(' OR ', $inWhereList) . ')');
+                if(in_array($conditionOperator, ['AND', 'OR'])) {
+                    $counter = 0;
+                    if(is_array($conditionList)) {
+                        $inWhereList = [];
+                        foreach($conditionList as $conditionValue) {
+                            array_push($inWhereList, $conditionField . ' = :' . $this->getBindParameterName($conditionField .$counter));
+                            $this->setParameter($conditionField .$counter, $conditionValue);
+                            $counter++;
                         }
+
+                        if($firstCondition) {
+                            $conditionOperator = '';
+                            $firstCondition = false;
+                        }
+                        array_push($whereList, $conditionOperator . '(' . implode(' OR ', $inWhereList) . ')');
                     }
                 }
-                
-                array_push($queryStructure, 'WHERE ' . implode(' ', $whereList));
             }
+
+            if(count($whereList) > 0)
+                array_push($queryStructure, 'WHERE ' . implode(' ', $whereList));
+
 
             //Step 3: Construct ORDER
             if (is_array($this->orderConditions)) {

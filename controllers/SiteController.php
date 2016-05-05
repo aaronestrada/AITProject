@@ -30,6 +30,7 @@ class SiteController extends BaseController {
      * Show initial page
      */
     public function actionIndex() {
+        $this->setLayoutVariable('hideHomeLink', true);
         $this->render('index');
     }
 
@@ -49,6 +50,7 @@ class SiteController extends BaseController {
 
             //Join left with "document_tag" and "tag" tables
             $documentQuery->select()
+                ->distinct()
                 ->joinLeft('document_tag', 'dt', ['doc.id = dt.document_id'])
                 ->joinLeft('tag', 't', ['t.id = dt.tag_id']);
 
@@ -164,9 +166,10 @@ class SiteController extends BaseController {
 
     /**
      * Get documents in cart added by logged in user
+     * @param bool $listOnly If it is required only the list with IDs
      * @return array List of documents
      */
-    private function getDocumentsInCart() {
+    private function getDocumentsInCart($listOnly = false) {
         $userId = $this->roleAccess->getProperty('id');
 
         $objUser = new User();
@@ -174,7 +177,10 @@ class SiteController extends BaseController {
 
         $documentList = [];
         if ($objUser != null)
-            $documentList = $objUser->getDocumentsInCart();
+            if($listOnly === false)
+                $documentList = $objUser->getDocumentsInCart();
+            else
+                $documentList = $objUser->getDocumentCartItems();
 
         return $documentList;
     }
@@ -194,6 +200,14 @@ class SiteController extends BaseController {
      */
     public function actionCheckout() {
         $documentList = $this->getDocumentsInCart();
+        $documentIDList = $this->getDocumentsInCart(true);
+
+        /**
+         * Store the documents from the shopping cart at the moment the user starts the checkout process
+         * so it is possible to verify if there are no changes of the cart prior to execute the
+         * charging process.
+         */
+        $this->roleAccess->setProperty('checkoutProcessDocuments', $documentIDList);
 
         //if documents in cart, show page, otherwise redirect to search page
         if (count($documentList) > 0) {
@@ -214,73 +228,101 @@ class SiteController extends BaseController {
         $errorList = [];
         $resultData = ['status' => 'error'];
         if ($this->request->isAjaxRequest() && $this->request->isPostRequest()) {
-            $creditCardNumber = $this->request->getParameter('card_number');
-            $cvvNumber = $this->request->getParameter('card_cvv');
-            $expirationMonth = $this->request->getParameter('exp_month');
-            $expirationYear = $this->request->getParameter('exp_year');
 
-            if (CreditCardValidations::validateCreditCardNumber($creditCardNumber) &&
-                CreditCardValidations::validateCreditCardCVV($cvvNumber) &&
-                CreditCardValidations::validateMonthNumber($expirationMonth) &&
-                CreditCardValidations::validateCreditCardYear($expirationYear)
-            ) {
-                //Valid credit card information, save purchase
-                $userId = $this->roleAccess->getProperty('id');
+            /**
+             * Step 1: verify that checkout list has not been changed while the user was on the checkout
+             * process.
+             */
+            $originalCartList = $this->roleAccess->getProperty('checkoutProcessDocuments');
+            $currentCartList = $this->getDocumentsInCart();
 
-                $objUser = new User();
-                $objUser = $objUser->fetchOne($userId);
-
-                if($objUser != null) {
-                    //Step 1: Create purchase
-                    $objPurchase = new Purchase();
-                    $objPurchase->user_id = $objUser->id;
-                    $objPurchase->created_at = date('Y-m-d h:i:s');
-                    $objPurchase->insert();
-
-                    if($objPurchase->id != null) {
-                        $purchaseId = $objPurchase->id;
-                        //Step 2: Associate purchase with documents in cart
-                        $documentList = $objUser->getDocumentsInCart();
-
-                        if(count($documentList) > 0) {
-                            foreach ($documentList as $documentItem) {
-                                $objPurchaseDocument = new PurchaseDocument();
-                                $objPurchaseDocument->document_id = $documentItem->id;
-                                $objPurchaseDocument->purchase_id = $purchaseId;
-
-                                /**
-                                 * Since the price of a document can change over time, the value has to be
-                                 * stored in each purchase to have a control of the incomes
-                                 */
-                                $objPurchaseDocument->price = $documentItem->price;
-
-                                //Save document into purchase
-                                $objPurchaseDocument->insert();
-                            }
-
-                            //Step 3: Erase document cart
-                            $objDocumentCartQuery = new BaseQuery();
-                            $objDocumentCartQuery->select()
-                                ->andWhere(['user_id' => $objUser->id]);
-
-                            $objDocumentCart = new UserDocumentCart();
-                            $objCartList = $objDocumentCart->queryAllFromObject($objDocumentCartQuery);
-
-                            if($objCartList != null)
-                                foreach($objCartList as $cartItem) {
-                                    $cartItem->delete();
-                                }
-                        }
-                        else array_push($errorList, 'error_cart_empty');
+            $checkoutListChanged = false;
+            if(count($originalCartList) == count($currentCartList)) {
+                foreach($currentCartList as $currentDocumentItem) {
+                    if (!in_array($currentDocumentItem->id, $originalCartList)) {
+                        $checkoutListChanged = true;
+                        break;
                     }
-                } else array_push($errorList, 'error_user_not_found');
-            } else array_push($errorList, 'error_credit_card_invalid');
+                }
+            }
+            else $checkoutListChanged = true;
+
+            if($checkoutListChanged === false) {
+                $creditCardNumber = $this->request->getParameter('card_number');
+                $cvvNumber = $this->request->getParameter('card_cvv');
+                $expirationMonth = $this->request->getParameter('exp_month');
+                $expirationYear = $this->request->getParameter('exp_year');
+
+                if (CreditCardValidations::validateCreditCardNumber($creditCardNumber) &&
+                    CreditCardValidations::validateCreditCardCVV($cvvNumber) &&
+                    CreditCardValidations::validateMonthNumber($expirationMonth) &&
+                    CreditCardValidations::validateCreditCardYear($expirationYear)
+                ) {
+                    //Valid credit card information, save purchase
+                    $userId = $this->roleAccess->getProperty('id');
+
+                    $objUser = new User();
+                    $objUser = $objUser->fetchOne($userId);
+
+                    if ($objUser != null) {
+                        //Step 1: Create purchase
+                        $objPurchase = new Purchase();
+                        $objPurchase->user_id = $objUser->id;
+                        $objPurchase->created_at = date('Y-m-d h:i:s');
+                        $objPurchase->insert();
+
+                        if ($objPurchase->id != null) {
+                            $purchaseId = $objPurchase->id;
+                            //Step 2: Associate purchase with documents in cart
+                            if (count($currentCartList) > 0) {
+                                foreach ($currentCartList as $documentItem) {
+                                    $objPurchaseDocument = new PurchaseDocument();
+                                    $objPurchaseDocument->document_id = $documentItem->id;
+                                    $objPurchaseDocument->purchase_id = $purchaseId;
+
+                                    /**
+                                     * Since the price of a document can change over time, the value has to be
+                                     * stored in each purchase to have a control of the incomes
+                                     */
+                                    $objPurchaseDocument->price = $documentItem->price;
+
+                                    //Save document into purchase
+                                    $objPurchaseDocument->insert();
+                                }
+
+                                //Step 3: Erase document cart
+                                $objDocumentCartQuery = new BaseQuery();
+                                $objDocumentCartQuery->select()
+                                    ->andWhere(['user_id' => $objUser->id]);
+
+                                $objDocumentCart = new UserDocumentCart();
+                                $objCartList = $objDocumentCart->queryAllFromObject($objDocumentCartQuery);
+
+                                if ($objCartList != null)
+                                    foreach ($objCartList as $cartItem) {
+                                        $cartItem->delete();
+                                    }
+                            } else array_push($errorList, 'cart_empty');
+                        }
+                    } else array_push($errorList, 'user_not_found');
+                } else array_push($errorList, 'credit_card_invalid');
+            } else array_push($errorList, 'cart_modified');
         } else array_push($errorList, 'connection_refused');
 
-        if (count($errorList) == 0)
+        //Obtain the alert to show in the checkout or in the post-checkout page
+        $alertHtml = $this->render('partial/checkoutAlert', ['errorList' => $errorList], false);
+
+        if (count($errorList) == 0) {
+            /**
+             * Since the checkout process has been successful, it will redirect to another page, thus
+             * it is necessary to store the alert into session to show it in the next page
+             */
+            $objSession = new BaseSession();
+            $objSession->set('checkoutAlert', $alertHtml);
             $resultData['status'] = 'ok';
+        }
         else
-            $resultData['errors'] = $errorList;
+            $resultData['alertHtml'] = $alertHtml;
 
         $this->hasLayout(false);
 

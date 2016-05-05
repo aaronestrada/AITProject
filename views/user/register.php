@@ -1,154 +1,99 @@
-<?php $this->view->addScript('/js/user/register.js'); ?>
-<div id="message"></div>
-<form action="/user/registeruser" method="POST" id="registerForm" onsubmit="return false;">
+<?php
+//List of months to construct select field
+$monthList = [
+    1 => 'January',
+    2 => 'February',
+    3 => 'March',
+    4 => 'April',
+    5 => 'May',
+    6 => 'June',
+    7 => 'July',
+    8 => 'August',
+    9 => 'September',
+    10 => 'October',
+    11 => 'November',
+    12 => 'December'
+];
+
+$formAction = 'registeruser';
+$formId = 'registerForm';
+$submitValue = 'Register';
+
+$formValue = [
+    'email' => '',
+    'firstname' => '',
+    'lastname' => '',
+    'birthdate_day' => '',
+    'birthdate_month' => '',
+    'birthdate_year' => ''
+];
+
+if ($isEdition) {
+    $formAction = 'edituser';
+    $formId = 'editForm';
+    $submitValue = 'Edit information';
+
+    $formValue['email'] = $objUser->email;
+    $formValue['firstname'] = $objUser->firstname;
+    $formValue['lastname'] = $objUser->lastname;
+
+    if ($objUser->birthdate != '') {
+        $birthdate = DateTime::createFromFormat('Y-m-d h:i:s', $objUser->birthdate);
+        $formValue['birthdate_day'] = $birthdate->format('d');
+        $formValue['birthdate_month'] = $birthdate->format('m');
+        $formValue['birthdate_year'] = $birthdate->format('Y');
+    }
+    $this->view->addScript('/js/user/edit.js');
+} else
+    $this->view->addScript('/js/user/register.js');
+
+?>
+<div id="message">
+    <?php if ($userFormValidationAlert != null) : echo $userFormValidationAlert; endif; ?>
+</div>
+<form action="/user/<?php echo $formAction; ?>" method="POST" id="<?php echo $formId; ?>" onsubmit="return false;">
     E-mail:
-    <input type="email" name="email" maxlength="150" required>
+    <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
 
     Password:
-    <input type="password" name="password" maxlength="32" required>
+    <input type="password" name="password" maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
 
     Confirm password:
-    <input type="password" name="confirm-password" maxlength="32" required>
+    <input type="password" name="confirm-password" maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
 
+    <?php if ($isEdition) : ?>
+        <p>Leave empty the password field if you do not want to change it.</p>
+    <?php endif; ?>
     Name:
-    <input type="text" name="firstname" maxlength="100" required>
+    <input type="text" name="firstname" maxlength="100" value="<?php echo $formValue['firstname']; ?>" required>
 
     Last name:
-    <input type="text" name="lastname" maxlength="100" required>
+    <input type="text" name="lastname" maxlength="100" value="<?php echo $formValue['lastname']; ?>" required>
 
     Birth date:
     <select name="birthdate_day" required>
         <option value="">Day</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-        <option value="17">17</option>
-        <option value="18">18</option>
-        <option value="19">19</option>
-        <option value="20">20</option>
-        <option value="21">21</option>
-        <option value="22">22</option>
-        <option value="23">23</option>
-        <option value="24">24</option>
-        <option value="25">25</option>
-        <option value="26">26</option>
-        <option value="27">27</option>
-        <option value="28">28</option>
-        <option value="29">29</option>
-        <option value="30">30</option>
-        <option value="31">31</option>
+        <?php for ($day = 1; $day <= 31; $day++) : ?>
+            <option
+                value="<?php echo $day; ?>"<?php if ($isEdition) : if ($day == $formValue['birthdate_day']) : ?> selected<?php endif;
+            endif; ?>><?php echo $day; ?></option>
+        <?php endfor; ?>
     </select>
     <select name="birthdate_month" required>
         <option value="">Month</option>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
+        <?php foreach ($monthList as $monthNumber => $monthName) : ?>
+            <option
+                value="<?php echo $monthNumber; ?>"<?php if ($isEdition) : if ($monthNumber == $formValue['birthdate_month']) : ?> selected<?php endif;
+            endif; ?>><?php echo $monthName; ?></option>
+        <?php endforeach; ?>
     </select>
     <select name="birthdate_year" required>
         <option value="">Year</option>
-        <option value="2016">2016</option>
-        <option value="2015">2015</option>
-        <option value="2014">2014</option>
-        <option value="2013">2013</option>
-        <option value="2012">2012</option>
-        <option value="2011">2011</option>
-        <option value="2010">2010</option>
-        <option value="2009">2009</option>
-        <option value="2008">2008</option>
-        <option value="2007">2007</option>
-        <option value="2006">2006</option>
-        <option value="2005">2005</option>
-        <option value="2004">2004</option>
-        <option value="2003">2003</option>
-        <option value="2002">2002</option>
-        <option value="2001">2001</option>
-        <option value="2000">2000</option>
-        <option value="1999">1999</option>
-        <option value="1998">1998</option>
-        <option value="1997">1997</option>
-        <option value="1996">1996</option>
-        <option value="1995">1995</option>
-        <option value="1994">1994</option>
-        <option value="1993">1993</option>
-        <option value="1992">1992</option>
-        <option value="1991">1991</option>
-        <option value="1990">1990</option>
-        <option value="1989">1989</option>
-        <option value="1988">1988</option>
-        <option value="1987">1987</option>
-        <option value="1986">1986</option>
-        <option value="1985">1985</option>
-        <option value="1984">1984</option>
-        <option value="1983">1983</option>
-        <option value="1982">1982</option>
-        <option value="1981">1981</option>
-        <option value="1980">1980</option>
-        <option value="1979">1979</option>
-        <option value="1978">1978</option>
-        <option value="1977">1977</option>
-        <option value="1976">1976</option>
-        <option value="1975">1975</option>
-        <option value="1974">1974</option>
-        <option value="1973">1973</option>
-        <option value="1972">1972</option>
-        <option value="1971">1971</option>
-        <option value="1970">1970</option>
-        <option value="1969">1969</option>
-        <option value="1968">1968</option>
-        <option value="1967">1967</option>
-        <option value="1966">1966</option>
-        <option value="1965">1965</option>
-        <option value="1964">1964</option>
-        <option value="1963">1963</option>
-        <option value="1962">1962</option>
-        <option value="1961">1961</option>
-        <option value="1960">1960</option>
-        <option value="1959">1959</option>
-        <option value="1958">1958</option>
-        <option value="1957">1957</option>
-        <option value="1956">1956</option>
-        <option value="1955">1955</option>
-        <option value="1954">1954</option>
-        <option value="1953">1953</option>
-        <option value="1952">1952</option>
-        <option value="1951">1951</option>
-        <option value="1950">1950</option>
-        <option value="1949">1949</option>
-        <option value="1948">1948</option>
-        <option value="1947">1947</option>
-        <option value="1946">1946</option>
-        <option value="1945">1945</option>
-        <option value="1944">1944</option>
-        <option value="1943">1943</option>
-        <option value="1942">1942</option>
-        <option value="1941">1941</option>
-        <option value="1940">1940</option>
-        <option value="1939">1939</option>
-        <option value="1938">1938</option>
-        <option value="1937">1937</option>
-        <option value="1936">1936</option>
+        <?php for ($year = date('Y') - 18; $year >= 1930; $year--) : ?>
+            <option
+                value="<?php echo $year; ?>"<?php if ($isEdition) : if ($year == $formValue['birthdate_year']) : ?> selected<?php endif;
+            endif; ?>><?php echo $year; ?></option>
+        <?php endfor; ?>
     </select>
-    <input type="submit" value="Register">
+    <input type="submit" value="<?php echo $submitValue; ?>">
 </form>

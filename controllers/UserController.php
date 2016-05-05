@@ -1,24 +1,37 @@
 <?php
 
 namespace controllers;
+
 use framework\BaseController;
 use framework\BaseQuery;
+use framework\BaseSession;
 use libs\JSONProcess;
 use libs\Validations;
 use models\User;
 
 class UserController extends BaseController {
+
+    public function behavior() {
+        return [
+            [
+                'permission' => 'allow',
+                'actions' => ['edit', 'edituser'],
+                'roles' => ['@']
+            ]
+        ];
+    }
+
     /**
      * Action executed to show login form
      */
     public function actionLogin() {
         //Step 0: verify that user is not logged in to process login action
-        if($this->roleAccess->isLoggedIn())
+        if ($this->roleAccess->isLoggedIn())
             $this->redirect('site/index');
 
         //Step 1: Verify if user has made a POST request to obtain parameters
         $attemptLogin = false;
-        if($this->request->isPostRequest()) {
+        if ($this->request->isPostRequest()) {
             $attemptLogin = true;
             //Step 2: Obtain request parameters from form
             $email = $this->request->getParameter('email');
@@ -35,11 +48,11 @@ class UserController extends BaseController {
             $objUser = $objUser->queryOneFromObject($objQuery);
 
             //Step 5: Verify that user has been found
-            if($objUser != null) {
+            if ($objUser != null) {
                 //Step 6: Check that password matches with what user has entered in form if user has been found
                 $passwordCheck = $objUser->checkPassword($password);
 
-                if($passwordCheck === true) {
+                if ($passwordCheck === true) {
                     //Step 7: If password matches, set login properties
                     $this->roleAccess->setProperty('id', $objUser->id);
                     $this->roleAccess->setProperty('firstname', $objUser->firstname);
@@ -55,8 +68,16 @@ class UserController extends BaseController {
             }
         }
 
+        //Obtain message from session and erase it
+        $objSession = new BaseSession();
+        $userFormValidationAlert = $objSession->get('userFormValidationAlert');
+        $objSession->remove('userFormValidationAlert');
+
         //Step 8: If no POST request or not possible to find the user, show login page
-        $this->render('login', ['attemptLogin' => $attemptLogin]);
+        $this->render('login', [
+            'attemptLogin' => $attemptLogin,
+            'userFormValidationAlert' => $userFormValidationAlert
+        ]);
     }
 
     public function actionLogout() {
@@ -65,41 +86,73 @@ class UserController extends BaseController {
     }
 
     public function actionRegister() {
-        if($this->roleAccess->isLoggedIn())
+        if ($this->roleAccess->isLoggedIn())
             $this->redirect('site/index');
 
-        $this->render('register');
+        $this->render('register', [
+            'isEdition' => false,
+            'objUser' => null,
+            'userFormValidationAlert' => null
+        ]);
     }
 
     /**
-     * Action made to register user into the system.
-     * Requirements: it must be an AJAX and a POST request to function, otherwise
-     * it will display an error.
-     *
-     * The output for this action is a JSON string.
+     * Construct list with form values for register or edition
+     * @return array List of values from form
      */
-    public function actionRegisteruser() {
+    private function getUserFormValues() {
+        $formValues = [
+            'email' => trim(strtolower($this->request->getParameter('email'))),
+            'firstname' => trim($this->request->getParameter('firstname')),
+            'lastname' => trim($this->request->getParameter('lastname')),
+            'password' => $this->request->getParameter('password'),
+            'confirmPassword' => $this->request->getParameter('confirm-password'),
+            'birthdate' => ''
+        ];
+
+        $birthdate_day = $this->request->getParameter('birthdate_day');
+        $birthdate_month = $this->request->getParameter('birthdate_month');
+        $birthdate_year = $this->request->getParameter('birthdate_year');
+
+        if ($birthdate_day != '' && $birthdate_month != '' && $birthdate_year != '')
+            $formValues['birthdate'] = $birthdate_year . '-' . $birthdate_month . '-' . $birthdate_day;
+
+        return $formValues;
+    }
+
+    /**
+     * Validate user form (register or edit)
+     * @param $formValues List of form values to validate
+     * @param bool $isEdition If is a validation from edition or not.  False by default
+     * @param $oldEmail User old email to validate only if changed
+     * @return array List of errors
+     */
+    public function validateUserForm($formValues, $isEdition = false, $oldEmail = null) {
         $errorList = [];
-        $resultData = ['status' => 'ok'];
 
-        if($this->request->isAjaxRequest() && $this->request->isPostRequest()) {
-            $email = trim($this->request->getParameter('email'));
-            $firstname = trim($this->request->getParameter('firstname'));
-            $lastname = trim($this->request->getParameter('lastname'));
-            $password = $this->request->getParameter('password');
-            $confirmPassword = $this->request->getParameter('confirm-password');
-            $birthdate_day = $this->request->getParameter('birthdate_day');
-            $birthdate_month = $this->request->getParameter('birthdate_month');
-            $birthdate_year = $this->request->getParameter('birthdate_year');
+        //get values from form list
+        $email = $formValues['email'];
+        $firstname = $formValues['firstname'];
+        $lastname = $formValues['lastname'];
+        $password = $formValues['password'];
+        $confirmPassword = $formValues['confirmPassword'];
+        $birthdate = $formValues['birthdate'];
 
-            //validate an empty email field
-            if($email == '')
-                array_push($errorList, 'error_email_empty');
-            elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) //revalidate email format
-                array_push($errorList, 'error_email_invalid');
-            else {
+        //validate an empty email field
+        if ($email == '')
+            array_push($errorList, 'error_email_empty');
+        elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) //revalidate email format
+            array_push($errorList, 'error_email_invalid');
+        else {
+            /**
+             * In case of an edition, it has to include the validation of the repeated mail
+             */
+            $validateEmail = true;
+            if ($isEdition)
+                $validateEmail = trim($oldEmail) != $email;
 
-                //verify that email has not been taken previously
+            if($validateEmail) {
+                //verify that email has not been taken by another user
                 $userEmailCountQuery = new BaseQuery();
                 $userEmailCountQuery->select()
                     ->andWhere(['email' => $email])
@@ -111,64 +164,186 @@ class UserController extends BaseController {
                 if ($userEmailCount > 0)
                     array_push($errorList, 'error_email_already_exists');
             }
+        }
 
-            //Verify empty first name field
-            if($firstname == '')
-                array_push($errorList, 'error_firstname_empty');
+        //Verify empty first name field
+        if ($firstname == '')
+            array_push($errorList, 'error_firstname_empty');
 
-            //Verify empty last name field
-            if($lastname == '')
-                array_push($errorList, 'error_lastname_empty');
+        //Verify empty last name field
+        if ($lastname == '')
+            array_push($errorList, 'error_lastname_empty');
 
+        /**
+         * Password fields must be validated in the following cases:
+         * 1) The user is registering
+         * 2) The user is editing its password and has entered at least one of two values in fields
+         */
+        $validatePasswordFields = true;
+        if ($isEdition)
+            $validatePasswordFields = ($password != '') || ($confirmPassword != '');
+
+        if ($validatePasswordFields) {
             //Verify empty password field
-            if($password == '')
+            if ($password == '')
                 array_push($errorList, 'error_password_empty');
 
             //Verify empty password confirmation field
-            if($confirmPassword == '')
+            if ($confirmPassword == '')
                 array_push($errorList, 'error_confirm-password_empty');
 
             //Verify that password and confirmation password match
-            if(($password != '') && ($confirmPassword != '') && ($password != $confirmPassword))
+            if (($password != '') && ($confirmPassword != '') && ($password != $confirmPassword))
                 array_push($errorList, 'error_passwords_do_not_match');
-
-            if($birthdate_day != '' && $birthdate_month != '' && $birthdate_year != '') {
-                $birthdate = $birthdate_year . '-' . $birthdate_month . '-' . $birthdate_day;
-                if (!Validations::validateDate($birthdate))
-                    array_push($errorList, 'error_birthdate_invalid');
-            }
-            else
-                array_push($errorList, 'error_birthdate_invalid');
-
         }
-        else {
+
+        if (!Validations::validateDate($birthdate))
+            array_push($errorList, 'error_birthdate_invalid');
+
+        return $errorList;
+    }
+
+    /**
+     * Action made to register user into the system.
+     * Requirements: it must be an AJAX and a POST request to function, otherwise
+     * it will display an error.
+     *
+     * The output for this action is a JSON string.
+     */
+    public function actionRegisteruser() {
+        $resultData = ['status' => 'ok'];
+
+        if ($this->request->isAjaxRequest() && $this->request->isPostRequest()) {
+            $formValues = $this->getUserFormValues();
+            $errorList = $this->validateUserForm($formValues);
+        } else {
             //No POST or AJAX call, return error
             JSONProcess::returnJsonOutput(['status' => 'error']);
             exit();
         }
 
-        if(count($errorList) > 0) {
+        /**
+         * If there are errors in the validation, obtain the rendered alert stored in
+         * partial/userformvalidation.php and send it to the output.
+         * The result will be obtained by the AJAX call made with Javascript and display
+         * the alert in the document.
+         *
+         * Otherwise, store in session and show in next page.
+         */
+        $this->hasLayout(false);
+        $alertHtml = $this->render('partial/userformvalidation', ['errorList' => $errorList, 'isEdition' => false], false);
+
+        if (count($errorList) > 0) {
             /**
              * If there are errors in the validation, obtain the rendered alert stored in
              * partial/registervalidation.php and send it to the output.
              * The result will be obtained by the AJAX call made with Javascript and display
              * the alert in the document
              */
-            $this->hasLayout(false);
             $resultData['status'] = 'error';
-            $resultData['alertHtml'] = $this->render('partial/registervalidation', ['errorList' => $errorList], false);
-        }
-        else {
+            $resultData['alertHtml'] = $alertHtml;
+        } else {
             //If no errors, store user in database
             $objUser = new User();
-            $objUser->firstname = $firstname;
-            $objUser->lastname = $lastname;
-            $objUser->birthdate = $birthdate;
-            $objUser->email = $email;
+            $objUser->firstname = $formValues['firstname'];
+            $objUser->lastname = $formValues['lastname'];
+            $objUser->birthdate = $formValues['birthdate'];
+            $objUser->email = $formValues['email'];
             $objUser->status = USER_STATUS_ACTIVE;
             $objUser->created_at = date('Y-m-d h:i:s');
-            $objUser->setPassword($password);
+            $objUser->setPassword($formValues['password']);
             $objUser->insert();
+
+            //store message in session
+            $objSession = new BaseSession();
+            $objSession->set('userFormValidationAlert', $alertHtml);
+        }
+
+        JSONProcess::returnJsonOutput($resultData);
+        exit();
+    }
+
+    /**
+     * Display the edition form for user information
+     */
+    public function actionEdit() {
+        $objUser = new User();
+        $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
+
+        if ($objUser != null) {
+
+            //Obtain message from session and erase it
+            $objSession = new BaseSession();
+            $userFormValidationAlert = $objSession->get('userFormValidationAlert');
+            $objSession->remove('userFormValidationAlert');
+
+            $this->render('register', [
+                'isEdition' => true,
+                'objUser' => $objUser,
+                'userFormValidationAlert' => $userFormValidationAlert
+            ]);
+        } else
+            $this->redirect('site/index');
+    }
+
+    /**
+     * Action made to edit user information.
+     * Requirements: it must be an AJAX and a POST request to function, otherwise
+     * it will display an error.
+     *
+     * The output for this action is a JSON string.
+     */
+    public function actionEdituser() {
+        $resultData = ['status' => 'ok'];
+        $errorOnProcess = true;
+
+        if ($this->request->isAjaxRequest() && $this->request->isPostRequest()) {
+            $objUser = new User();
+            $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
+
+            if ($objUser != null) {
+                $errorOnProcess = false;
+                $formValues = $this->getUserFormValues();
+                $errorList = $this->validateUserForm($formValues, true, $objUser->email);
+            }
+        }
+
+        if ($errorOnProcess) {
+            //No POST or AJAX call, return error
+            JSONProcess::returnJsonOutput(['status' => 'error']);
+            exit();
+        }
+
+        /**
+         * If there are errors in the validation, obtain the rendered alert stored in
+         * partial/userformvalidation.php and send it to the output.
+         * The result will be obtained by the AJAX call made with Javascript and display
+         * the alert in the document
+         */
+        $this->hasLayout(false);
+        $alertHtml = $this->render('partial/userformvalidation', ['errorList' => $errorList, 'isEdition' => true], false);
+
+        if (count($errorList) > 0) {
+            $resultData['status'] = 'error';
+            $resultData['alertHtml'] = $alertHtml;
+        } else {
+            //If no errors, update user in database
+            $objUser->firstname = $formValues['firstname'];
+            $objUser->lastname = $formValues['lastname'];
+            $objUser->birthdate = $formValues['birthdate'];
+            $objUser->email = $formValues['email'];
+            $objUser->modified_at = date('Y-m-d h:i:s');
+            if ($formValues['password'] != '')
+                $objUser->setPassword($formValues['password']);
+            $objUser->update();
+
+            //Update first name and last name from logged in session
+            $this->roleAccess->setProperty('firstname', $formValues['firstname']);
+            $this->roleAccess->setProperty('lastname', $formValues['lastname']);
+
+            //store message in session
+            $objSession = new BaseSession();
+            $objSession->set('userFormValidationAlert', $alertHtml);
         }
 
         JSONProcess::returnJsonOutput($resultData);

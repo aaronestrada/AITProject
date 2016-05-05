@@ -12,11 +12,13 @@
 </head>
 <body>
 <div>
+    <a href="/">Home</a>
     <?php if (!$this->roleAccess->isLoggedIn()) : ?>
         <a href="/user/login">Login</a>
         <a href="/user/register">Register</a>
     <?php else: ?>
         <a href="/site/cart">My shopping cart</a>
+        <a href="/user/edit">My account</a>
         <a href="/user/logout">Logout
             (<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>)</a>
     <?php endif; ?>
