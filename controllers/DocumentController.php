@@ -23,6 +23,31 @@ class DocumentController extends BaseController {
     }
 
     /**
+     * Obtain number of occurrences of a document purchased by a user
+     * @param $userId User ID
+     * @param $documentId Document ID
+     * @return int Number of occurrences
+     */
+    private function getDocumentPurchaseCount($userId, $documentId) {
+        /**
+         * Create query:
+         * SELECT COUNT(*) FROM purchase_document pr_doc
+         * JOIN purchase purch ON pr_doc.purchase_id = purch.id
+         * WHERE pr_doc.document_id = <document_id> AND purch.user_id = <user_id>;
+         */
+        $purchaseDocumentQuery = new BaseQuery('pr_doc');
+        $purchaseDocumentQuery->select()
+            ->join('purchase', 'purch', ['purch.id = pr_doc.purchase_id'])
+            ->andWhere(['purch.user_id' => $userId, 'pr_doc.document_id' => $documentId])
+            ->count();
+
+        $objPurchaseDocument = new PurchaseDocument();
+        $purchaseDocumentCount = $objPurchaseDocument->queryAllFromObject($purchaseDocumentQuery);
+
+        return $purchaseDocumentCount;
+    }
+
+    /**
      * Add document to / remove document from cart.
      * The method verifies that the document exists, checks if the document is already
      * in the cart and validates that is has not been purchased before.
@@ -78,21 +103,7 @@ class DocumentController extends BaseController {
                 if ($toggleAction == 'add_to_cart') {
                     if ($documentCartCount == 0) {
                         //Step 3.1: Verify that document is not already in purchased items
-
-                        /**
-                         * Create query:
-                         * SELECT COUNT(*) FROM purchase_document pr_doc
-                         * JOIN purchase purch ON pr_doc.purchase_id = purch.id
-                         * WHERE pr_doc.document_id = <document_id> AND purch.user_id = <user_id>;
-                         */
-                        $purchaseDocumentQuery = new BaseQuery('pr_doc');
-                        $purchaseDocumentQuery->select()
-                            ->join('purchase', 'purch', ['purch.id = pr_doc.purchase_id'])
-                            ->andWhere(['purch.user_id' => $userId, 'pr_doc.document_id' => $documentId])
-                            ->count();
-
-                        $objPurchaseDocument = new PurchaseDocument();
-                        $purchaseDocumentCount = $objPurchaseDocument->queryAllFromObject($purchaseDocumentQuery);
+                        $purchaseDocumentCount = $this->getDocumentPurchaseCount($userId, $documentId);
 
                         if ($purchaseDocumentCount == 0) {
                             //Step 3.2: if document not found in cart and in purchased items, add to cart
@@ -102,8 +113,7 @@ class DocumentController extends BaseController {
                             $newUserDocumentCart->insert();
                         } else array_push($errorList, 'document_already_purchased');
                     } else array_push($errorList, 'document_already_in_cart');
-                }
-                else {
+                } else {
                     /**
                      * Step 4: In the case the user is removing from cart, verify that is in database
                      * to delete the item
@@ -111,10 +121,9 @@ class DocumentController extends BaseController {
                     if ($documentCartCount > 0) {
                         $objDocumentToRemove = new UserDocumentCart();
                         $objDocumentToRemove = $objDocumentToRemove->fetchOne(['document_id' => $documentId, 'user_id' => $userId]);
-                        if($objDocumentToRemove != null)
+                        if ($objDocumentToRemove != null)
                             $objDocumentToRemove->delete();
-                    }
-                    else array_push($errorList, 'document_not_in_cart');
+                    } else array_push($errorList, 'document_not_in_cart');
                 }
             } else array_push($errorList, 'document_not_found');
         } else array_push($errorList, 'connection_refused');
@@ -127,5 +136,36 @@ class DocumentController extends BaseController {
 
         JSONProcess::returnJsonOutput($resultData);
         exit();
+    }
+
+    /**
+     * Download a purchased document
+     * It is possible to download a document if the user has already purchased it
+     */
+    public function actionDownload() {
+        $documentId = $this->request->getParameter('id');
+
+        if (is_numeric($documentId)) {
+            //Step 1: Verify that document exists
+            $objDocument = new Document();
+            $objDocument = $objDocument->fetchOne($documentId);
+            if ($objDocument != null) {
+                //Step 2: If document exists, verify that user has already purchased it
+                $purchaseDocumentCount = $this->getDocumentPurchaseCount($this->roleAccess->getProperty('id'), $documentId);
+                if ($purchaseDocumentCount > 0) {
+                    $fileNamePath = DATASET_PATH . $documentId;
+                    if (file_exists($fileNamePath)) {
+                        $documentFileName = $objDocument->filename != '' ? $objDocument->filename : $documentId;
+
+                        header('Content-Disposition: attachment; filename="' . basename($documentFileName) . '"');
+                        header("Content-Length: " . filesize($fileNamePath));
+                        header("Content-Type: " . mime_content_type($fileNamePath) . ";");
+                        readfile($fileNamePath);
+                        exit();
+                    }
+                }
+            }
+        }
+        $this->redirect('site/index');
     }
 }

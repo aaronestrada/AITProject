@@ -7,6 +7,8 @@ use framework\BaseQuery;
 use framework\BaseSession;
 use libs\JSONProcess;
 use libs\Validations;
+use models\Document;
+use models\Purchase;
 use models\User;
 
 class UserController extends BaseController {
@@ -15,7 +17,7 @@ class UserController extends BaseController {
         return [
             [
                 'permission' => 'allow',
-                'actions' => ['edit', 'edituser'],
+                'actions' => ['edit', 'edituser', 'purchases'],
                 'roles' => ['@']
             ]
         ];
@@ -348,5 +350,43 @@ class UserController extends BaseController {
 
         JSONProcess::returnJsonOutput($resultData);
         exit();
+    }
+
+    /**
+     * Display purchased documents for a user
+     */
+    public function actionPurchases() {
+        $purchaseQuery = new BaseQuery();
+        $purchaseQuery->select()
+            ->andWhere(['user_id' => $this->roleAccess->getProperty('id')])
+            ->order(['created_at' => 'DESC']);
+
+        $documentObjectList = [];
+
+        $objPurchase = new Purchase();
+        $purchaseList = $objPurchase->queryAllFromObject($purchaseQuery);
+
+        if($purchaseList != null) {
+            foreach ($purchaseList as $purchaseItem) {
+                $documentObjectList[$purchaseItem->id] = [];
+                $purchasedDocuments = $purchaseItem->getPurchasedDocuments();
+                foreach ($purchasedDocuments as $purchaseDocumentItem) {
+                    $objDocument = new Document();
+                    $objDocument = $objDocument->fetchOne($purchaseDocumentItem->document_id);
+
+                    if ($objDocument != null) {
+                        array_push($documentObjectList[$purchaseItem->id], [
+                            'documentItem' => $objDocument,
+                            'purchasePrice' => $purchaseDocumentItem->price
+                        ]);
+                    }
+                }
+            }
+        }
+        
+        $this->render('purchases', [
+            'purchaseList' => $purchaseList != null ? $purchaseList : [],
+            'documentObjectList' => $documentObjectList
+        ]);
     }
 }

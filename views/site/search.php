@@ -10,8 +10,7 @@
         </div>
         <?php if ($userLoggedIn) : ?>
             <?php if (in_array($documentId, $purchasedDocuments)) : ?>
-                <input type="button" value="Download" class="downloadDocumentButton"
-                       data-id="<?php echo $documentId; ?>">
+                <a href="/document/download/id/<?php echo $documentId; ?>">Download</a>
             <?php elseif (!in_array($documentId, $documentsInCart)) : ?>
                 <input type="button" value="Add to cart" class="cartButton" data-role="add_to_cart"
                        data-id="<?php echo $documentId; ?>">

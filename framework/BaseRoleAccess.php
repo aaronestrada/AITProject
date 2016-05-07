@@ -31,7 +31,7 @@ class BaseRoleAccess {
          * Verify that parameters are correctly set to configure timeout and storage name of the
          * RoleAccess object in session.
          */
-        $paramSettings = require('../config/params.php');
+        $paramSettings = require('../config/config.php');
         if(isset($paramSettings['roleAccess'])) {
             $roleAccessSettings = $paramSettings['roleAccess'];
             $roleAccessSessionName = isset($roleAccessSettings['sessionName']) ? $roleAccessSettings['sessionName'] : '';
@@ -62,7 +62,7 @@ class BaseRoleAccess {
      */
     public static function getInstance($session) {
         //Step 1: obtain configuration parameters for role access object
-        $paramSettings = require('../config/params.php');
+        $paramSettings = require('../config/config.php');
         if(isset($paramSettings['roleAccess'])) {
             //Verify that configuration has session name
             $roleAccessSettings = $paramSettings['roleAccess'];

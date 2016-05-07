@@ -12,8 +12,7 @@ $documentId = $documentItem->id;
 
     <?php if ($userLoggedIn) : ?>
         <?php if ($isDocumentPurchased) : ?>
-            <input type="button" value="Download" class="downloadDocumentButton"
-                   data-id="<?php echo $documentId; ?>">
+            <a href="/document/download/id/<?php echo $documentId; ?>">Download</a>
         <?php elseif (!$isDocumentInCart) : ?>
             <input type="button" value="Add to cart" class="cartButton" data-role="add_to_cart"
                    data-id="<?php echo $documentId; ?>">
