@@ -17,10 +17,14 @@ var searchFunctions = {
                 //response is OK, document has been saved in / removed from cart, modify button
                 if(buttonRole == 'add_to_cart') {
                     thisButton.data('role', 'remove_from_cart');
+                    thisButton.removeClass('btn-success');
+                    thisButton.addClass('btn-danger');
                     thisButton.val('Remove from cart');
                 }
                 else {
                     thisButton.data('role', 'add_to_cart');
+                    thisButton.removeClass('btn-danger');
+                    thisButton.addClass('btn-success');
                     thisButton.val('Add to cart');
                 }
             }

@@ -1,0 +1,46 @@
+@media screen and (min-width: 701px) {
+    header h1 {
+        font-size: 1em
+    }
+
+    header nav a.logo {
+        width: 30%;
+        float: left
+    }
+
+    nav ul.menu {
+        display: block;
+        list-style-type: none;
+        width: 70%;
+        float: left;
+        padding: 0;
+        margin: 0;
+        text-align: right;
+    }
+
+    nav ul.menu li {
+        display: inline-block;
+        text-align: center;
+    }
+
+    nav ul.menu li:first-child {
+        border-left: none;
+    }
+
+    nav ul.menu a {
+        text-decoration: none;
+        color: #fff;
+        padding: 0.8em 1em;
+        display: block;
+        white-space: nowrap; /* disallow breaking title into multiple lines */
+    }
+
+    nav ul.menu a:hover {
+        background-color: #4c4c4c;
+        transition: 0.3s;
+    }
+
+    nav a.pull {
+        display: none
+    }
+}

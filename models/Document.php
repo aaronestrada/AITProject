@@ -43,4 +43,16 @@ class Document extends BaseModel {
         }
         return [];
     }
+
+    /**
+     * Return author object for a document
+     * @return BaseModel|null
+     */
+    public function getAuthor() {
+        if($this->id !== null) {
+            $objAuthor = new Author();
+            return $objAuthor->fetchOne($this->author_id);
+        }
+        return null;
+    }
 }

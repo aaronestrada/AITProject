@@ -1,17 +1,29 @@
-<div>
-    <h1>Lorem ipsum</h1>
-    <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-        laborum.
-    </p>
-</div>
-<form action="/site/search" method="GET">
-    Search
-    <input type="text" name="searchtext">
-
-    Tags
-    <input type="text" name="tags">
-    <input type="submit" value="Search">
-</form>
+<article class="main-info">
+    <header>
+        <h1>Looking for some data?</h1>
+    </header>
+    <section>
+        <div class="row-block">
+            <div class="col-size-12">
+                Open Data System will help you to find interesting information to use them for your company or for
+                research purposes. Our database contains more than 10,000 data sets under hundreds of categories.
+                Please
+                register and have fun!
+            </div>
+        </div>
+        <div class="row-block">
+            <br>
+            <form action="/site/search" method="GET">
+                <div class="col-size-9">
+                    <input type="text" placeholder="Enter your search criteria" name="searchtext">
+                    <input type="hidden" name="tags">
+                </div>
+                <div class="col-size-3">
+                    <input type="submit" value="Let's begin!" class="btn btn-success">
+                </div>
+            </form>
+            <br>
+            <br>
+        </div>
+    </section>
+</article>

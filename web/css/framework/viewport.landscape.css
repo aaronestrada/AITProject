@@ -1,0 +1,16 @@
+@media screen and (min-width: 768px) and (max-width: 939px) {
+    nav ul.menu li {
+        font-size: 0.9em
+    }
+
+    nav ul.menu li a {
+        padding: 0.8em 0.3em
+    }
+
+    input[type=button].btn-small,
+    input[type=submit].btn-small {
+        width: 46%;
+        float: left;
+        margin: 0.2em 2%;
+    }
+}

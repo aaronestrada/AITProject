@@ -1,0 +1,219 @@
+/****************************
+ * Global fields
+ ****************************/
+* {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 1em;
+}
+
+body {
+    margin: 0;
+    line-height: 1.7em;
+    padding-top: 5em;
+}
+
+article {
+    margin-bottom: 1em
+}
+
+a {
+    text-decoration: none
+}
+
+/****************************
+ * Header global definition
+ ****************************/
+header.main-header,
+footer.main-footer {
+    overflow: hidden;
+    z-index: 100;
+    width: 100%;
+    display: block;
+    float: left;
+}
+
+header.main-header h1 {
+    line-height: 1.2em
+}
+
+header.main-header nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: block;
+    float: left;
+    background-color: #000
+}
+
+/****************************
+ * Content definition
+ ****************************/
+div.content {
+    width: 90%;
+    display: block;
+    margin: 0 5% 5%;
+    float: left;
+    min-height: 25em;
+}
+
+/****************************
+ * Form controls
+ ****************************/
+input[type=text] {
+    border: solid 1px #c1c1c1;
+    padding: 0.3em 0.5em;
+    height: 1.4em;
+    width: 90%
+}
+
+.field-inline * {
+    display: inline-block;
+    float: left;
+}
+
+.field-inline span {
+    width: 30%;
+    margin-right: 3%;
+    text-align: right;
+    line-height: 2em;
+}
+
+.field-inline input[type=text] {
+    width: 55%;
+}
+
+/****************************
+ * Buttons definition
+ ****************************/
+input[type=button],
+input[type=submit] {
+    /*In Chrome, to remove outside border*/
+    outline: 0;
+}
+
+input[type=button].btn,
+input[type=submit].btn {
+    height: 2.1em;
+    line-height: 0;
+    padding: 0.2em 1.5em;
+    text-align: center;
+    font-weight: bold;
+    background-color: #FFF;
+    border-radius: 0.3em;
+    font-size: 0.95em;
+    border-style: solid;
+    border-width: 0.1em;
+}
+
+input[type=button].btn:active,
+input[type=submit].btn:active {
+    padding: 0.3em 1.5em 0.1em;
+}
+
+.btn-success {
+    border-color: #80ae64;
+    background: linear-gradient(to bottom, #b0e894, #87b76b);
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: linear-gradient(to top, #b0e894, #87b76b);
+}
+
+.btn-danger {
+    border-color: #8e321b;
+    background: linear-gradient(to bottom, #f44e29, #af4128);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(to top, #f44e29, #af4128);
+}
+
+.btn-default {
+    border-color: #282c7b;
+    background: linear-gradient(to bottom, #4043e4, #303497);
+    color: #fff;
+}
+
+.btn-default:hover {
+    background: linear-gradient(to top, #4043e4, #303497);
+}
+
+.btn-warning {
+    border-color: #66672b;
+    background: linear-gradient(to bottom, #c3c451, #8b8c3b);
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(to top, #c3c451, #8b8c3b);
+}
+
+input[type=button].btn-small,
+input[type=submit].btn-small {
+    padding: 0.2em 1.5em;
+    text-align: center;
+    background-color: #FFF;
+    border-radius: 0.7em;
+    font-size: 0.85em;
+    border-style: solid;
+    border-width: 0.2em;
+}
+
+input[type=button].btn-small:hover,
+input[type=submit].btn-small:hover {
+    background: linear-gradient(to bottom, #FFFFFF, #F6F6F6);
+}
+
+input[type=button].btn-small:active,
+input[type=submit].btn-small:active {
+    background: linear-gradient(to top, #FFFFFF, #F6F6F6);
+}
+
+.btn-small.btn-success {
+    border-color: #80ae64;
+    background: #fff;
+    color: #80ae64;
+}
+
+.btn-small.btn-danger {
+    border-color: #C34328;
+    background: #fff;
+    color: #C34328;
+}
+
+.btn-small.btn-default {
+    border-color: #3539a9;
+    background: #fff;
+    color: #3539a9;
+}
+
+.btn-small.btn-warning {
+    border-color: #c3c451;
+    background: #fff;
+    color: #c3c451;
+}
+
+input[type=button].btn:hover,
+input[type=submit].btn:hover,
+input[type=button].btn-small:hover,
+input[type=submit].btn-small:hover {
+    cursor: pointer
+}
+
+/****************************
+ * Footer
+ ****************************/
+.main-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-height: 2em;
+    background-color: #FFF;
+    border-top: solid 0.1em #000;
+    text-align: center;
+    font-size: 0.8em;
+    padding: 0.3em 0 0.7em
+}

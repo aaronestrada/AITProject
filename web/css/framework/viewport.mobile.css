@@ -1,0 +1,82 @@
+@media screen and (max-width: 400px) {
+    body.search-fields {
+        padding-top: 13em;
+    }
+
+    div.content {
+        min-height: 45em;
+    }
+
+    header h1 {
+        font-size: 0.8em
+    }
+
+    header nav a.logo {
+        width: 30%;
+        float: left
+    }
+
+    nav a.pull {
+        height: 30px;
+        display: inline-block;
+        right: 15px;
+        top: 10px;
+        color: #fff;
+        font-size: 2em;
+        width: 70%;
+        text-align: right
+    }
+
+    nav ul.menu {
+        height: auto;
+        position: absolute;
+        margin: 0;
+        top: 2em;
+        right: 0;
+    }
+
+    nav ul.menu li {
+        display: block;
+        background: #000;
+        text-align: center;
+        padding-top: 0.3em;
+        padding-bottom: 0.3em;
+        border-top: 1px solid #4d4d4d;
+    }
+
+    nav ul.menu li:hover {
+        background-color: #4c4c4c;
+        transition: 0.3s;
+    }
+
+    nav ul.menu a {
+        color: #fff;
+        padding: 0 3.5em;
+        width: 100%;
+    }
+
+    nav ul.menu.hidden-menu {
+        display: none;
+    }
+
+    nav ul.menu.display-menu {
+        display: block;
+    }
+
+    input[type=text] {
+        width: 84%
+    }
+
+    input[type=button].btn {
+        height: 2.1em;
+        width: 90%;
+    }
+
+    input[type=button].btn-small,
+    input[type=submit].btn-small {
+        width: 46%;
+        float: left;
+        margin: 0.2em 2%;
+    }
+
+}

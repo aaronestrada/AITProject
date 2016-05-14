@@ -1,0 +1,84 @@
+article.main-info header {
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center
+}
+
+article.main-info section {
+    margin: 0 15% 0;
+    font-size: 1em;
+    text-align: center
+}
+
+body.search-fields {
+    padding-top: 9em;
+}
+
+div.search-row {
+    border-bottom: solid 1px #000;
+    padding: 1em 15%;
+    width: 70%;
+    float: left;
+    background-color: #FFF
+}
+
+article.document {
+    font-size: 0.85em;
+    border: dashed 0.1em #AAA;
+    float: left;
+    padding: 1em;
+    width: 96%
+}
+
+article.document p {
+    margin: 0
+}
+
+article.document header {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.2em
+}
+
+article.document header h1 {
+    width: 75%;
+    float: left;
+    font-size: 1.8em;
+    margin: 0
+}
+article.document header span {
+    width: 25%;
+    float: left;
+    text-align: right;
+    margin-top: 0.3em;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+article.document section p.description {
+    text-align: justify;
+}
+
+article.document footer {
+    float: left;
+    width: 100%;
+    margin-top:1em;
+    text-align: right;
+}
+
+article.document p.tags {
+    margin-top: 0.8em
+}
+
+article.document a.tag {
+    background-color: #576bae;
+    color: #FFF;
+    font-size: 0.9em;
+    padding: 0 0.5em;
+    border-radius: 1em;
+    margin: 0.1em;
+    float: left;
+}
+
+article.document a.tag:hover {
+    text-decoration: underline;
+}

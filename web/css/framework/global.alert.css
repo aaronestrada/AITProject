@@ -1,0 +1,26 @@
+.alert {
+    width: 98.30%;
+    display: block;
+    float: left;
+    padding: 0.70%;
+    margin: 0.2em 0 0.35em;
+    border-style: solid;
+    border-width: 0.1em;
+}
+
+.alert-success {
+    border-color: #80ae64;
+    border-radius: 2%;
+    color: #87b76b;
+    background-color: rgba(128, 174, 100, 0.2);
+}
+
+.alert-danger {
+    border: solid 0.1em #f44e29;
+    border-radius: 2%;
+    color: #af4128;
+    background-color: rgba(175, 65, 40, 0.2)
+}
+
+
+
