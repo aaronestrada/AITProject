@@ -1,6 +1,8 @@
 var searchFunctions = {
     register: function() {
         $('.cartButton').click(searchFunctions.toggleCartButton);
+        $('.moreInfoButton').click(documentFunctions.gotoOverview);
+        $('.downloadButton').click(documentFunctions.downloadDocument);
     },
     toggleCartButton: function() {
         var document_id = $(this).data('id');

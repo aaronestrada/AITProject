@@ -383,7 +383,8 @@ class UserController extends BaseController {
                 }
             }
         }
-        
+
+        $this->setLayout('main_search');
         $this->render('purchases', [
             'purchaseList' => $purchaseList != null ? $purchaseList : [],
             'documentObjectList' => $documentObjectList

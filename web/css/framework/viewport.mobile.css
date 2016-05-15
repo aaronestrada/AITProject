@@ -1,14 +1,18 @@
 @media screen and (max-width: 400px) {
+    h1, h2 {
+        margin: 0.2em 0
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    h2 {
+        font-size: 1.3em
+    }
+
     body.search-fields {
-        padding-top: 13em;
-    }
-
-    div.content {
-        min-height: 45em;
-    }
-
-    header h1 {
-        font-size: 0.8em
+        padding-top: 13em
     }
 
     header nav a.logo {
@@ -32,7 +36,7 @@
         position: absolute;
         margin: 0;
         top: 2em;
-        right: 0;
+        right: 0
     }
 
     nav ul.menu li {
@@ -41,42 +45,68 @@
         text-align: center;
         padding-top: 0.3em;
         padding-bottom: 0.3em;
-        border-top: 1px solid #4d4d4d;
+        border-top: 1px solid #4d4d4d
     }
 
     nav ul.menu li:hover {
         background-color: #4c4c4c;
-        transition: 0.3s;
+        transition: 0.3s
     }
 
     nav ul.menu a {
         color: #fff;
         padding: 0 3.5em;
-        width: 100%;
+        width: 100%
     }
 
     nav ul.menu.hidden-menu {
-        display: none;
+        display: none
     }
 
     nav ul.menu.display-menu {
-        display: block;
+        display: block
     }
 
-    input[type=text] {
-        width: 84%
+    input[type=text],
+    input[type=password],
+    input[type=email] {
+        width: 93%
     }
 
-    input[type=button].btn {
+    input[type=button].btn,
+    input[type=submit].btn{
         height: 2.1em;
-        width: 90%;
+        width: 97%
     }
 
     input[type=button].btn-small,
     input[type=submit].btn-small {
         width: 46%;
         float: left;
-        margin: 0.2em 2%;
+        margin: 0.2em 2%
+    }
+
+    .align-center-mobile {
+        text-align: center;
+    }
+
+    article.document header h1,
+    article.document header h2,
+    article.document header h3 {
+        width: 60%;
+        float: left;
+        margin: 0
+    }
+
+    article.document header span {
+        width: 40%;
+    }
+
+    article.document header h1 {
+        font-size: 1.4em;
+    }
+    article.document header h3 {
+        font-size: 1em;
     }
 
 }

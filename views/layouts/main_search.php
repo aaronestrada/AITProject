@@ -55,6 +55,7 @@ $tags = isset($searchQuery['tags']) ? $searchQuery['tags'] : '';
     </nav>
 </header>
 <div class="content"><?php echo $layoutContent; ?></div>
+<footer class="main-footer">Aaron Estrada, Gustavs Venters - Advanced Internet Technologies, 2016 &copy;</footer>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script type="text/javascript" src="/js/framework/framework.js"></script>
 <?php foreach ($this->view->getScripts(JS_POSITION_END) as $scriptFile) : ?>

@@ -1,8 +1,8 @@
 <?php if (count($errorList) > 0) : ?>
-    <div><?php foreach ($errorList as $errorItem) :
+    <div class="alert alert-danger"><?php foreach ($errorList as $errorItem) :
             switch ($errorItem):
                 case 'credit_card_invalid': ?>
-                    <div>E-mail is already taken</div>
+                    <div>Credit card is invalid.  Please verify.</div>
                     <?php break;
                 case 'cart_modified': ?>
                     <div>Your shopping cart has been modified.  Please <a href="javascript:void(0)" onclick="location.reload();">refresh this page.</a></div>
@@ -18,5 +18,5 @@
         endforeach; ?>
     </div>
 <?php else : ?>
-    <div>Thanks for your purchase! You are now able to dowload the files.</div>
+    <div class="alert alert-success">Thanks for your purchase! Proceed to download the files.</div>
 <?php endif; ?>

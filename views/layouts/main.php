@@ -29,7 +29,7 @@
                 <li><a href="/user/logout">Logout (<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>)</a></li>
             <?php endif; ?>
         </ul>
-        <a href="#" class="pull"id="menuIcon" data-menu-id="menu">&#9776;</a>
+        <a href="#" class="pull" id="menuIcon" data-menu-id="menu">&#9776;</a>
     </nav>
 </header>
 <div class="content">

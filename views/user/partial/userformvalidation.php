@@ -1,5 +1,5 @@
 <?php if (count($errorList) > 0): ?>
-    <div><?php foreach ($errorList as $errorItem) :
+    <div class="alert alert-danger"><?php foreach ($errorList as $errorItem) :
             switch ($errorItem):
                 case 'error_email_empty': ?>
                     <div>E-mail is empty</div>
@@ -33,9 +33,9 @@
     </div>
 <?php else :
     if ($isEdition) : ?>
-        <div>Your information has been updated!</div>
+        <div class="alert alert-success">Your information has been updated!</div>
     <?php else : ?>
-        <div>Thanks for registering! Please enter your credentials to login!</div>
+        <div class="alert alert-success">Thanks for registering! Please enter your credentials to login!</div>
         <?php
     endif;
 endif;

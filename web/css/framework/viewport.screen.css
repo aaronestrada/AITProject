@@ -1,6 +1,18 @@
 @media screen and (min-width: 701px) {
-    header h1 {
-        font-size: 1em
+    h1, h2, h3{
+        margin: 0.5em 0
+    }
+
+    h1 {
+        font-size: 2.5em
+    }
+
+    h2 {
+        font-size: 2em
+    }
+
+    h3 {
+        font-size: 1.3em;
     }
 
     header nav a.logo {

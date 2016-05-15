@@ -310,6 +310,7 @@ class SiteController extends BaseController {
         } else array_push($errorList, 'connection_refused');
 
         //Obtain the alert to show in the checkout or in the post-checkout page
+        $this->hasLayout(false);
         $alertHtml = $this->render('partial/checkoutAlert', ['errorList' => $errorList], false);
 
         if (count($errorList) == 0) {

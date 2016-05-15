@@ -1,9 +1,28 @@
 @media screen and (min-width: 401px) and (max-width: 700px) {
+    body.search-fields {
+        padding-top: 13em
+    }
+
+    h1, h2 {
+        margin: 0.3em 0
+    }
+
+    h1 {
+        font-size: 2em;
+        line-height: 1em;
+    }
+
+    h2 {
+        font-size: 1.8em;
+    }
+
+    header nav a.logo {
+        width: 30%;
+        float: left
+    }
+
     nav a.pull {
-        height: 30px;
         display: inline-block;
-        right: 15px;
-        top: 10px;
         color: #fff;
         font-size: 2em;
         width: 70%;
@@ -46,18 +65,14 @@
         display: block;
     }
 
-    /*nav ul.menu li {
-        font-size: 0.9em
-    }
-
-    nav ul.menu li a {
-        padding: 0.8em 0.3em
-    }*/
-
     input[type=button].btn-small,
     input[type=submit].btn-small {
         width: 46%;
         float: left;
         margin: 0.2em 2%;
+    }
+
+    .form-regular label {
+        font-size: 0.9em
     }
 }
