@@ -355,7 +355,7 @@ class UserController extends BaseController {
     /**
      * Display purchased documents for a user
      */
-    public function actionPurchases() {
+    public function actionOrders() {
         $purchaseQuery = new BaseQuery();
         $purchaseQuery->select()
             ->andWhere(['user_id' => $this->roleAccess->getProperty('id')])
@@ -384,10 +384,16 @@ class UserController extends BaseController {
             }
         }
 
+        //Obtain message from session and erase it
+        $objSession = new BaseSession();
+        $checkoutAlertSuccess = $objSession->get('checkoutAlert');
+        $objSession->remove('checkoutAlert');
+
         $this->setLayout('main_search');
-        $this->render('purchases', [
+        $this->render('orders', [
             'purchaseList' => $purchaseList != null ? $purchaseList : [],
-            'documentObjectList' => $documentObjectList
+            'documentObjectList' => $documentObjectList,
+            'checkoutAlertSuccess' => $checkoutAlertSuccess
         ]);
     }
 }

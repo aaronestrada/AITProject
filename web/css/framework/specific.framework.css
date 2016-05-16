@@ -77,8 +77,6 @@ article.document section p.description {
     text-align: justify;
 }
 
-
-
 article.document p.tags {
     margin-top: 0.8em
 }
@@ -95,4 +93,12 @@ article.document a.tag {
 
 article.document a.tag:hover {
     text-decoration: underline;
+}
+
+article.order h3 {
+    width: 100% !important
+}
+
+article.order .row-block {
+    margin-bottom: 0.5em
 }

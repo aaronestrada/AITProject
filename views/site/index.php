@@ -15,7 +15,7 @@
             <br>
             <form action="/site/search" method="GET">
                 <div class="col-size-9">
-                    <input type="text" placeholder="Enter your search criteria" name="searchtext">
+                    <input type="text" placeholder="Enter your search criteria" name="searchtext" required>
                     <input type="hidden" name="tags">
                 </div>
                 <div class="col-size-3">

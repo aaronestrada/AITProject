@@ -12,7 +12,7 @@ var checkoutFunctions = {
         }).done(function (response) {
             if (response.status == 'ok')
             //response is OK, user has been saved, redirect to login page
-                location.href = '/user/purchases';
+                location.href = '/user/orders';
             else
             //error on saving, show alert in screen
                 $('#message').html(response.alertHtml);
