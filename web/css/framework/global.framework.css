@@ -20,6 +20,11 @@ a {
     text-decoration: none
 }
 
+a.decor {
+    color: #82ba6d;
+    font-weight: bold;
+}
+
 .align-left {
     text-align: left;
 }

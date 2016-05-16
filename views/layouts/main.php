@@ -15,7 +15,7 @@
 <body>
 <header class="main-header">
     <nav>
-        <a class="logo" href="#">&nbsp;<!--img src="/img/logo.png" alt="logo"--></a>
+        <a class="logo" href="/"><img src="/img/logo.png" alt="logo"></a>
         <ul class="menu hidden-menu" id="menu"><?php if (!isset($hideHomeLink)) : ?>
                 <li><a href="/">Home</a></li>
             <?php endif; ?>

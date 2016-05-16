@@ -13,9 +13,11 @@ var registerFunctions = {
             if(response.status == 'ok')
                 //response is OK, user has been saved, redirect to login page
                 location.href = '/user/login';
-            else
+            else {
                 //error on saving, show alert in screen
                 $('#message').html(response.alertHtml);
+                $(document).scrollTop(0);
+            }
         });
         return false;
     }

@@ -16,14 +16,15 @@
     }
 
     header nav a.logo {
-        width: 30%;
-        float: left
+        width: 20%;
+        float: left;
+        line-height: 0;
     }
 
     nav ul.menu {
         display: block;
         list-style-type: none;
-        width: 70%;
+        width: 80%;
         float: left;
         padding: 0;
         margin: 0;

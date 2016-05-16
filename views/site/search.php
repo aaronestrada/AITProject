@@ -9,6 +9,7 @@ $this->view->addScript('/js/site/search.js');
         Please register and have fun!
     </div>
     <div class="col-size-8 col-padleft-1">
+        <h2>Search results</h2>
         <iframe id="downloadFile" class="hidden"></iframe>
         <div id="message" class="row-block"></div>
         <?php if (count($documentList) > 0) :

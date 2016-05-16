@@ -20,7 +20,7 @@ $tags = isset($searchQuery['tags']) ? $searchQuery['tags'] : '';
 <body class="search-fields">
 <header class="main-header">
     <nav>
-        <a class="logo" href="#">&nbsp;</a>
+        <a class="logo" href="/"><img src="/img/logo.png" alt="logo"></a>
         <ul class="menu hidden-menu" id="menu">
             <li><a href="/">Home</a></li>
             <?php if (!$this->roleAccess->isLoggedIn()) : ?>

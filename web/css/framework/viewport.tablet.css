@@ -17,23 +17,25 @@
     }
 
     header nav a.logo {
-        width: 30%;
-        float: left
+        width: 80%;
+        float: left;
+        line-height: 0;
     }
 
     nav a.pull {
         display: inline-block;
         color: #fff;
         font-size: 2em;
-        width: 70%;
-        text-align: right
+        width: 16%;
+        text-align: right;
+        padding: 0.3em 0.2em 0 0;
     }
 
     nav ul.menu {
         height: auto;
         position: absolute;
         margin: 0;
-        top: 2em;
+        top: 3.2em;
         right: 0;
     }
 

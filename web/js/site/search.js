@@ -33,6 +33,7 @@ var searchFunctions = {
 
             //show message
             $('#message').html(response.alertHtml);
+            $(document).scrollTop(0);
         });
         return false;
     }
