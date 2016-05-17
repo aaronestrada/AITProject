@@ -102,3 +102,31 @@ article.order h3 {
 article.order .row-block {
     margin-bottom: 0.5em
 }
+
+article.tags header {
+    font-size: 1.2em;
+    margin: 0.5em 0;
+    background: #4257a9;
+    color: #fff;
+    padding: 0.3em
+}
+
+article.tags a {
+    font-size: 0.8em;
+    color: #4257a9;
+    padding-left: 1em
+}
+
+article.tags a:hover {
+    text-decoration: underline;
+}
+
+article.tags .toggle {
+    font-size: 1em;
+    padding-left: 0.8em
+}
+
+article.tags a.toggle:hover {
+    text-decoration: none;
+    color: #5784ed;
+}

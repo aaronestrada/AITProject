@@ -19,7 +19,7 @@
             </p>
         </div>
         <div class="col-size-4 align-right">
-            <img src="/img/logo.png" alt="logo">
+            <a href="/"><img src="/img/logo.png" alt="logo"></a>
         </div>
     </div>
 

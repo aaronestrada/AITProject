@@ -38,7 +38,7 @@ a.decor {
 }
 
 .hidden {
-    display: none
+    display: none !important;
 }
 
 .emphasize {
@@ -279,4 +279,34 @@ input[type=submit].btn-small:hover {
     text-align: center;
     font-size: 0.8em;
     padding: 0.3em 0 0.7em
+}
+
+/*****************************
+ * Loader
+ *****************************/
+.loading {
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.50);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.loading-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+}
+
+.loading img {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }

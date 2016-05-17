@@ -109,4 +109,8 @@
         font-size: 1em;
     }
 
+    .loading-image {
+        height: 23%;
+    }
+
 }

@@ -6,9 +6,8 @@
         <div class="row-block">
             <div class="col-size-12">
                 Open Data System will help you to find interesting information to use them for your company or for
-                research purposes. Our database contains more than 10,000 data sets under hundreds of categories.
-                Please
-                register and have fun!
+                research purposes. Our database contains more than 10,000 data sets under hundreds of categories. <?php if (!$this->roleAccess->isLoggedIn()) : ?>
+                Please register and have fun!<?php endif; ?>
             </div>
         </div>
         <div class="row-block">

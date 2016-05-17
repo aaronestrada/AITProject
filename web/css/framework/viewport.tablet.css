@@ -1,4 +1,4 @@
-@media screen and (min-width: 401px) and (max-width: 700px) {
+@media screen and (min-width: 401px) and (max-width: 710px) {
     body.search-fields {
         padding-top: 13em
     }
@@ -76,5 +76,9 @@
 
     .form-regular label {
         font-size: 0.9em
+    }
+
+    .loading-image {
+        height: 30%;
     }
 }

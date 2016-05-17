@@ -1,14 +1,41 @@
 <?php
 $this->view->addScript('/js/site/document.js');
 $this->view->addScript('/js/site/search.js');
+
+$totalTags = null;
+if (is_array($tagList)) {
+    $totalTagCount = count($tagList);
+    $totalTags = $totalTagCount <= 5 ? $totalTagCount : 5;
+}
 ?>
 <div class="row-block">
-    <div class="col-size-3-border-right">
-        Open Data System will help you to find interesting information to use them for your company or for
-        research purposes. Our database contains more than 10,000 data sets under hundreds of categories.
-        Please register and have fun!
+    <div class="col-size-2">
+        <article class="tags">
+            <header>Tags</header>
+            <section>
+                <div class="row-block">
+                    <?php
+                    for ($tagIndex = 0; $tagIndex < $totalTags; $tagIndex++) :
+                        $tagItem = $tagList[$tagIndex]; ?>
+                        <div class="col-size-12"><a
+                                href="/site/search?tags=<?php echo urlencode($tagItem->name); ?>"><?php echo $tagItem->name; ?>
+                                (<?php echo $tagItem->getDocumentCount(); ?>)</a></div>
+                    <?php endfor; ?>
+                </div>
+                <div class="row-block" id="tagList" style="display: none;">
+                    <?php
+                    for ($tagIndex = $totalTags; $tagIndex < $totalTagCount; $tagIndex++) :
+                        $tagItem = $tagList[$tagIndex]; ?>
+                        <div class="col-size-12"><a
+                                href="/site/search?tags=<?php echo urlencode($tagItem->name); ?>"><?php echo $tagItem->name; ?>
+                                (<?php echo $tagItem->getDocumentCount(); ?>)</a></div>
+                    <?php endfor; ?>
+                </div>
+                <summary><a href="#" class="toggle" id="lnkShowMoreTags" data-toggle="show" data-more="More &#9660;" data-less="Less &#9650;">More &#9660;</a></summary>
+            </section>
+        </article>
     </div>
-    <div class="col-size-8 col-padleft-1">
+    <div class="col-size-9 col-padleft-1">
         <h2>Search results</h2>
         <iframe id="downloadFile" class="hidden"></iframe>
         <div id="message" class="row-block"></div>
@@ -28,7 +55,9 @@ $this->view->addScript('/js/site/search.js');
                                 <?php if ($objAuthor->name != '') : ?>
                                     <p><strong>Published by:</strong> <?php echo $objAuthor->name; ?></p>
                                 <?php endif; ?>
-                                <p><strong>Published on:</strong> <?php echo date('d/m/Y', strtotime($documentItem->published_at)); ?></p>
+                                <p><strong>Published
+                                        on:</strong> <?php echo date('d/m/Y', strtotime($documentItem->published_at)); ?>
+                                </p>
                                 <p class="tags">
                                     <?php foreach ($documentItem->getTags() as $tagObject) : ?>
                                         <a href="/site/search?tags=<?php echo urlencode($tagObject->name); ?>"

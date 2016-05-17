@@ -10,6 +10,7 @@ use libs\JSONProcess;
 use models\Document;
 use models\Purchase;
 use models\PurchaseDocument;
+use models\Tag;
 use models\User;
 use models\UserDocumentCart;
 
@@ -105,6 +106,14 @@ class SiteController extends BaseController {
                 }
             }
 
+            //Obtain list of tags
+            $objTagQuery = new BaseQuery();
+            $objTagQuery->select()
+                ->order(['name' => 'ASC']);
+
+            $objTag = new Tag();
+            $objTagList = $objTag->queryAllFromObject($objTagQuery);
+
             //Store search field values in session
             $objSession = new BaseSession();
             $objSession->set('searchQuery', ['searchText' => $searchText, 'tags' => $tags]);
@@ -115,7 +124,8 @@ class SiteController extends BaseController {
                 'documentList' => $documentList != null ? $documentList : [],
                 'documentsInCart' => $documentsInCart,
                 'purchasedDocuments' => $purchasedDocuments,
-                'userLoggedIn' => $userLoggedIn
+                'userLoggedIn' => $userLoggedIn,
+                'tagList' => $objTagList
             ]);
         } else
             //if no parameters are found, redirect to the index page

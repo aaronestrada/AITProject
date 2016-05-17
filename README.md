@@ -4,8 +4,9 @@ The following project simulates a shopping Web site for Open Data.  The process 
 card information is not implemented since this is a third-party service.
 
 Our project has been developed using the following technologies:
-* PHP 5.5.1
-* MySQL database 14.14
+* Apache Web Server v2.4.7
+* PHP v5.5.1
+* MySQL database v14.14
 * jQuery for client-scripting
 
 Framework
@@ -50,6 +51,12 @@ Apache configuration
                 RewriteRule . index.php
         </Directory>
 </VirtualHost>
+```
+
+"Rewrite" module must be active in Apache.  To activate it (Ubuntu), use the following commands:
+```
+$ sudo a2enmod rewrite
+$ sudo service apache2 restart
 ```
 
 Database configuration

@@ -26,7 +26,8 @@
                 <li><a href="/site/cart">My shopping cart <span id="shoppingCount">(<?php echo $documentInCartCount; ?>)</span></a></li>
                 <li><a href="/user/orders">My orders</a></li>
                 <li><a href="/user/edit">My account</a></li>
-                <li><a href="/user/logout">Logout (<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>)</a></li>
+                <li><a href="/user/logout">Logout
+                        (<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>)</a></li>
             <?php endif; ?>
         </ul>
         <a href="#" class="pull" id="menuIcon" data-menu-id="menu">&#9776;</a>
@@ -36,6 +37,11 @@
     <?php echo $layoutContent; ?>
 </div>
 <footer class="main-footer">Aaron Estrada, Gustavs Venters - Advanced Internet Technologies, 2016 &copy;</footer>
+<div class="loading hidden">
+    <div class="loading-image">
+        <img src="/img/ajax-loader.gif" alt="loader">
+    </div>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script type="text/javascript" src="/js/framework/framework.js"></script>
 <?php foreach ($this->view->getScripts(JS_POSITION_END) as $scriptFile) : ?>
