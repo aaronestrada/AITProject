@@ -27,7 +27,7 @@ $tags = isset($searchQuery['tags']) ? $searchQuery['tags'] : '';
                 <li><a href="/user/login">Login</a></li>
                 <li><a href="/user/register">Register</a></li>
             <?php else: ?>
-                <li><a href="/site/cart">My shopping cart</a></li>
+                <li><a href="/site/cart">My shopping cart <span id="shoppingCount">(<?php echo $documentInCartCount; ?>)</span></a></li>
                 <li><a href="/user/orders">My orders</a></li>
                 <li><a href="/user/edit">My account</a></li>
                 <li><a href="/user/logout">Logout

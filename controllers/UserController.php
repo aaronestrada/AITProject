@@ -24,6 +24,23 @@ class UserController extends BaseController {
     }
 
     /**
+     * Execute the function before executing a specified action.
+     * To set the shopping list quantity of documents in cart, it is necessary
+     * to execute this action and store the value in a variable passed to the layouts
+     */
+    public function beforeAction() {
+        $documentsInCartCount = 0;
+        if ($this->roleAccess->isLoggedIn()) {
+            $objUser = new User();
+            $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
+
+            if ($objUser != null)
+                $documentsInCartCount = $objUser->getDocumentCartItems(true);
+        }
+        $this->setLayoutVariable('documentInCartCount', $documentsInCartCount);
+    }
+
+    /**
      * Action executed to show login form
      */
     public function actionLogin() {

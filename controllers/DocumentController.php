@@ -124,25 +124,25 @@ class DocumentController extends BaseController {
                         $objDocumentToRemove = $objDocumentToRemove->fetchOne(['document_id' => $documentId, 'user_id' => $userId]);
                         if ($objDocumentToRemove != null)
                             $objDocumentToRemove->delete();
-
-                        //Step 4.1: Count documents in cart and new total for checkout and send into response
-                        $objUser = new User();
-                        $objUser = $objUser->fetchOne($userId);
-                        $availableDocuments = $objUser->getDocumentsInCart();
-
-                        $checkoutTotal = 0;
-                        foreach ($availableDocuments as $documentInCart)
-                            $checkoutTotal += floatval($documentInCart->price);
-                        $resultData['document_count'] = count($availableDocuments);
-                        $resultData['checkout_total'] = number_format($checkoutTotal, 2, '.', ',');
-
                     } else array_push($errorList, 'document_not_in_cart');
                 }
             } else array_push($errorList, 'document_not_found');
         } else array_push($errorList, 'connection_refused');
 
-        if (count($errorList) == 0)
+        if (count($errorList) == 0) {
             $resultData['status'] = 'ok';
+
+            //Step 5: Count documents in cart and new total for checkout and send into response
+            $objUser = new User();
+            $objUser = $objUser->fetchOne($userId);
+            $availableDocuments = $objUser->getDocumentsInCart();
+
+            $checkoutTotal = 0;
+            foreach ($availableDocuments as $documentInCart)
+                $checkoutTotal += floatval($documentInCart->price);
+            $resultData['document_count'] = count($availableDocuments);
+            $resultData['checkout_total'] = number_format($checkoutTotal, 2, '.', ',');
+        }
 
         $this->hasLayout(false);
         $resultData['alertHtml'] = $this->render('partial/toggleCartAlert', ['errorList' => $errorList, 'toggleAction' => $toggleAction], false);

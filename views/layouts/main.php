@@ -23,7 +23,7 @@
                 <li><a href="/user/login">Login</a></li>
                 <li><a href="/user/register">Register</a></li>
             <?php else: ?>
-                <li><a href="/site/cart">My shopping cart</a></li>
+                <li><a href="/site/cart">My shopping cart <span id="shoppingCount">(<?php echo $documentInCartCount; ?>)</span></a></li>
                 <li><a href="/user/orders">My orders</a></li>
                 <li><a href="/user/edit">My account</a></li>
                 <li><a href="/user/logout">Logout (<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>)</a></li>

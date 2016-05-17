@@ -13,7 +13,12 @@ var searchFunctions = {
             url: '/document/togglecart',
             method: "POST",
             data: {'document_id': document_id, 'action' : buttonRole},
-            dataType: "json"
+            dataType: "json",
+            statusCode: {
+                403: function() {
+                    location.href = '/user/login';
+                }
+            }
         }).done(function(response) {
             if(response.status == 'ok') {
                 //response is OK, document has been saved in / removed from cart, modify button
@@ -33,6 +38,11 @@ var searchFunctions = {
 
             //show message
             $('#message').html(response.alertHtml);
+
+            //update shopping cart value
+            $('#shoppingCount').text('(' + response.document_count + ')');
+
+            //scroll to top to show message
             $(document).scrollTop(0);
         });
         return false;

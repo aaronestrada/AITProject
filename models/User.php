@@ -50,28 +50,38 @@ class User extends BaseModel {
         return $passwordValue == $password ? true : false;
     }
 
-
     /**
      * Get list of all document IDs inside the user's shopping cart
-     * @return array List of document IDs
+     * @param bool $countDocuments
+     * @return array|null List of document IDs | Count of documents in cart
      */
-    public function getDocumentCartItems() {
+    public function getDocumentCartItems($countDocuments = false) {
         $documentItems = [];
+        $documentCount = 0;
         if($this->id != null) {
             //Create new query: SELECT * FROM user_document_cart WHERE user_id = <user_id>
             $userDocumentCartQuery = new BaseQuery();
             $userDocumentCartQuery->select()
                 ->andWhere(['user_id' => $this->id]);
 
+            //Add counter if only number is necessary
+            if($countDocuments === true)
+                $userDocumentCartQuery->count();
+
             $objUserDocumentCart = new UserDocumentCart();
             $documentCartList = $objUserDocumentCart->queryAllFromObject($userDocumentCartQuery);
 
             if ($documentCartList != null) {
-                foreach ($documentCartList as $documentCartItem)
-                    array_push($documentItems, $documentCartItem->document_id);
+                if($countDocuments === false) {
+                    foreach ($documentCartList as $documentCartItem)
+                        array_push($documentItems, $documentCartItem->document_id);
+                }
+                else
+                    $documentCount = $documentCartList;
             }
         }
-        return $documentItems;
+        
+        return $countDocuments === true ? $documentCount : $documentItems;
     }
 
     /**

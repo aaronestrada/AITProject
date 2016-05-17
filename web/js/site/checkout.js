@@ -8,7 +8,12 @@ var checkoutFunctions = {
             url: actionUrl,
             method: "POST",
             data: $('#checkoutprocessForm').serialize(),
-            dataType: "json"
+            dataType: "json",
+            statusCode: {
+                403: function() {
+                    location.href = '/user/login';
+                }
+            }
         }).done(function (response) {
             if (response.status == 'ok')
             //response is OK, user has been saved, redirect to login page

@@ -139,4 +139,16 @@ class BaseController {
         header("Location: /" . $redirectPage);
         exit();
     }
+
+    /**
+     * Function executed before executing the called action
+     * Implementing this behavior is done on each BaseController child
+     */
+    public function beforeAction() {}
+
+    /**
+     * Function executed after executing the called action
+     * Implementing this behavior is done on each BaseController child
+     */
+    public function afterAction() {}
 }

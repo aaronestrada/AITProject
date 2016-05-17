@@ -11,7 +11,12 @@ var cartFunctions = {
             url: '/document/togglecart',
             method: "POST",
             data: {'document_id': document_id, 'action': 'remove_from_cart'},
-            dataType: "json"
+            dataType: "json",
+            statusCode: {
+                403: function() {
+                    location.href = '/user/login';
+                }
+            }
         }).done(function (response) {
             if (response.status == 'ok') {
                 //response is OK, document has been removed from cart, clear div
@@ -29,6 +34,11 @@ var cartFunctions = {
 
             //show message
             $('#message').html(response.alertHtml);
+
+            //update shopping cart value
+            $('#shoppingCount').text('(' + response.document_count + ')');
+
+            //scroll to top to show message
             $(document).scrollTop(0);
         });
         return false;

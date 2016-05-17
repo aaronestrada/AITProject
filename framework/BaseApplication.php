@@ -151,8 +151,14 @@ class BaseApplication {
                     if (count($this->requestParameters) > 0)
                         $controller->setRequest(new BaseRequest($this->requestParameters, $this->isPost, $this->isAjax));
 
-                    //Step 11: Invoke action from controller
+                    //Step 11: Invoke before the action controller
+                    $controller->beforeAction();
+
+                    //Step 12: Invoke action from controller
                     $controller->$actionName();
+
+                    //Step 13: Invoke after the action controller
+                    $controller->afterAction();
                 } else \framework\BaseError::throwMessage(403, 'Forbidden: Action "' . ucfirst($actionRequestName) . '" cannot be accessed by this role.');
             } else \framework\BaseError::throwMessage(404, 'Action "' . ucfirst($actionRequestName) . '" does not exist.');
         } else \framework\BaseError::throwMessage(404, 'Controller "' . ucfirst($controllerRequestName) . '" does not exist.');
