@@ -45,13 +45,13 @@ Our custom MVC framework is composed by 10 classes which interact to construct t
 * When the action is executed, it is possible to access to **BaseModel** instances, requested parameters saved on the **BaseRequest** object, **BaseSession** object and **BaseRoleAccess**
 * If an action needs to render content, the controller has to specify the view.  It is only possible to render views inside the views/<controller> folder. 
 
-![Framework - part 1](https://gitlab.inf.unibz.it/aaronestrada/AITProject/blob/master/docs/diagrams/framework1.png "Framework - part 1")
-![Framework - part 2](https://gitlab.inf.unibz.it/aaronestrada/AITProject/blob/master/docs/diagrams/framework2.png "Framework - part 2")
+![Framework - part 1](docs/diagrams/framework1.jpg "Framework - part 1")
 
+![Framework - part 2](docs/diagrams/framework2.jpg "Framework - part 2")
 
 Following the directory structure, each controller and model inherits from the classes inside the framework.
 
-![Application - class](https://gitlab.inf.unibz.it/aaronestrada/AITProject/blob/master/docs/diagrams/application.png "Application - class diagram")
+![Application - class](docs/diagrams/application.jpg "Application - class diagram")
 
 Apache configuration
 -----
