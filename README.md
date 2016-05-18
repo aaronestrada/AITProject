@@ -4,6 +4,7 @@ The following project simulates a shopping Web site for Open Data.  The process 
 card information is not implemented since this is a third-party service.
 
 Our project has been developed using the following technologies:
+
 * Apache Web Server v2.4.7
 * PHP v5.5.1
 * MySQL database v14.14
@@ -32,6 +33,25 @@ web                 Folder containing resources for Web pages.
     img/            Images to be accessed by the views
     js/             Javascript files for client-side development
 ```
+
+Class specification
+-------------------
+Our custom MVC framework is composed by 10 classes which interact to construct the application. 
+
+* The main class is **BaseApplication**; the resource web/index.php creates a new instance of this class and runs the complete application.
+* **BaseApplication** request an action inside a controller.  If the controller and the action exist, it processes the request parameters and store them in the **BaseRequest** instance inside the controller.
+* Before executing an action, **BaseController** validates the configured behavior, acting as the access control for logged in users.  **BaseRoleAccess** is the class in charge of controlling the access.
+* Prior to and after executing an action, inside **BaseController** there are two methods which can be overridden to execute custom instructions.
+* When the action is executed, it is possible to access to **BaseModel** instances, requested parameters saved on the **BaseRequest** object, **BaseSession** object and **BaseRoleAccess**
+* If an action needs to render content, the controller has to specify the view.  It is only possible to render views inside the views/<controller> folder. 
+
+![Framework - part 1](docs/diagrams/framework1.png "Framework - part 1")
+![Framework - part 2](docs/diagrams/framework2.png "Framework - part 2")
+
+
+Following the directory structure, each controller and model inherits from the classes inside the framework.
+
+![Application - class](docs/diagrams/application.png "Application - class diagram")
 
 Apache configuration
 -----
