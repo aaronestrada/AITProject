@@ -1,5 +1,5 @@
 <?php
-include_once dirname(__FILE__) . '../config/db.php';
+include_once dirname(__FILE__) . '/../config/db.php';
 
 function frameworkAutoloader($classname) {
     $classFile = str_replace('\\', '/', $classname) . '.php';
