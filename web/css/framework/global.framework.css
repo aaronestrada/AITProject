@@ -10,6 +10,7 @@ body {
     margin: 0;
     line-height: 1.7em;
     padding-top: 5em;
+    min-width: 290px;
 }
 
 article {
@@ -65,6 +66,7 @@ footer.main-footer {
     width: 100%;
     display: block;
     float: left;
+    min-width: 290px;
 }
 
 header.main-header h1 {
@@ -75,6 +77,7 @@ header.main-header nav {
     position: fixed;
     top: 0;
     width: 100%;
+    min-width: 290px;
     display: block;
     float: left;
     background-color: #000

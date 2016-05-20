@@ -36,13 +36,14 @@
 <div class="content">
     <?php echo $layoutContent; ?>
 </div>
-<footer class="main-footer">Aaron Estrada, Gustavs Venters - Advanced Internet Technologies, 2016 &copy;</footer>
+<footer class="main-footer">Aaron&nbsp;Estrada, Gustavs&nbsp;Venters - Advanced&nbsp;Internet&nbsp;Technologies, 2016 &copy;</footer>
 <div class="loading hidden">
     <div class="loading-image">
         <img src="/img/ajax-loader.gif" alt="loader">
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/js/vendor/jquery-1.12.2.min.js"><\/script>')</script>
 <script type="text/javascript" src="/js/framework/framework.js"></script>
 <?php foreach ($this->view->getScripts(JS_POSITION_END) as $scriptFile) : ?>
     <script type="text/javascript" src="<?php echo $scriptFile; ?>"></script>

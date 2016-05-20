@@ -1,4 +1,4 @@
-@media screen and (min-width: 401px) and (max-width: 710px) {
+@media screen and (min-width: 401px) and (max-width: 800px) {
     body.search-fields {
         padding-top: 13em
     }
@@ -46,6 +46,7 @@
         padding-top: 0.3em;
         padding-bottom: 0.3em;
         border-top: 1px solid #4d4d4d;
+        white-space: nowrap;
     }
 
     nav ul.menu li:hover {

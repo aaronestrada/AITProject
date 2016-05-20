@@ -20,6 +20,6 @@
         <a href="/"><img src="/img/logo.png" alt="logo"></a>
     </div>
 </div>
-<footer class="main-footer">Aaron Estrada, Gustavs Venters - Advanced Internet Technologies, 2016 &copy;</footer>
+<footer class="main-footer">Aaron&nbsp;Estrada, Gustavs&nbsp;Venters - Advanced&nbsp;Internet&nbsp;Technologies, 2016 &copy;</footer>
 </body>
 </html>

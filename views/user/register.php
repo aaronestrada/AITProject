@@ -38,7 +38,7 @@ if ($isEdition) {
     $formValue['lastname'] = $objUser->lastname;
 
     if ($objUser->birthdate != '') {
-        $birthdate = DateTime::createFromFormat('Y-m-d h:i:s', $objUser->birthdate);
+        $birthdate = DateTime::createFromFormat('Y-m-d', $objUser->birthdate);
         $formValue['birthdate_day'] = $birthdate->format('d');
         $formValue['birthdate_month'] = $birthdate->format('m');
         $formValue['birthdate_year'] = $birthdate->format('Y');
