@@ -114,4 +114,8 @@
         height: 23%;
     }
 
+    #chartArea input.btn {
+        width: 80%;
+        margin: 0.3em 10% 0.3em 10%;
+    }
 }

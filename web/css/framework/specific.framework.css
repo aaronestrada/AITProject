@@ -130,3 +130,15 @@ article.tags a.toggle:hover {
     text-decoration: none;
     color: #5784ed;
 }
+/* chart */
+#chartArea select {
+    height: 8em;
+}
+#chartArea input.btn {
+    font-weight: normal;
+    padding: 0;
+}
+
+#chartArea h1, h2, h3, h4 {
+    padding: 0 3%;
+}

@@ -82,4 +82,9 @@
     .loading-image {
         height: 30%;
     }
+
+    #chartArea input.btn {
+        width: 70%;
+        margin: 0.3em 15% 0.3em 15%;
+    }
 }

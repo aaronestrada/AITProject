@@ -1,13 +1,15 @@
 <?php
 $this->view->addScript('/js/site/document.js');
 $this->view->addScript('/js/site/search.js');
+$this->view->addScript('/js/vendor/chart.min.js');
+$this->view->addScript('/js/site/overview.js');
 $documentId = $documentItem->id;
 $objAuthor = $documentItem->getAuthor();
 ?>
 <iframe id="downloadFile" class="hidden"></iframe>
 <div id="message"></div>
 <div class="row-block">
-    <div class="col-size-5">
+    <div class="col-size-11">
         <article class="document">
             <header>
                 <h1><?php echo $documentItem->name; ?></h1>
@@ -51,5 +53,26 @@ $objAuthor = $documentItem->getAuthor();
             </footer>
         </article>
     </div>
-    <div class="col-size-6 col-padleft-1">Chart space</div>
+    <div id="chartArea" class="col-size-11" data-id="<?php echo $documentId; ?>" data-name="<?php echo $documentItem->name; ?>">
+        <h3>Document chart</h3>
+        <div id="chartControls" class="col-size-12">
+            <!-- axisColumn  <select id="axisColumn"></select> -->
+            <div class="col-size-6">
+                <select id="availableCols" class="col-size-12" multiple="multiple">
+                    <optgroup label="Available columns">
+                </select>
+                <input type="button" onclick="addColumns()" class="btn btn-success col-size-12" value="Add">
+            </div>
+            <div class="col-size-6">
+                <select id="selectedCols" class="col-size-12" multiple="multiple">
+                    <optgroup label="Columns in chart">
+                </select>
+                <input type="button" onclick="removeColumns()" class="btn btn-warning col-size-12" value="Remove">
+            </div>
+        </div>
+        <div class="col-size-12">
+            <canvas id="canvas">Your browser does not support canvas</canvas>
+        </div>
+    </div>
+
 </div>

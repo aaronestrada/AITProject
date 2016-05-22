@@ -17,6 +17,11 @@ class DocumentController extends BaseController {
         return [
             [
                 'permission' => 'allow',
+                'actions' => ['demo'],
+                'roles' => ['*']
+            ],
+            [
+                'permission' => 'allow',
                 'actions' => ['*'],
                 'roles' => ['@']
             ]
@@ -176,6 +181,42 @@ class DocumentController extends BaseController {
                         readfile($fileNamePath);
                         exit();
                     }
+                }
+            }
+        }
+        $this->redirect('site/index');
+    }
+
+    /**
+     * Download a document sample
+     * It is possible to download a document if the user has already purchased it
+     */
+    public function actionDemo() {
+        $documentId = $this->request->getParameter('id');
+
+        if (is_numeric($documentId)) {
+            //Step 1: Verify that document exists
+            $objDocument = new Document();
+            $objDocument = $objDocument->fetchOne($documentId);
+            if ($objDocument != null) {
+                //Step 2: Parse first 11 rows of the file
+                $fileNamePath = DATASET_PATH . $documentId;
+                if (file_exists($fileNamePath)) {
+                    header("Content-Type: text/csv");
+                    header("Content-Disposition: attachment; filename=sample.csv");
+                    header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
+                    header("Pragma: no-cache"); // HTTP 1.0
+                    header("Expires: 0"); // Proxies
+                    $file = fopen($fileNamePath, "r");
+                    $output = fopen("php://output", "w");
+                    $demoRowCount = 11;
+                    while(!feof($file) && $demoRowCount > 0){
+                        fputs($output, fgets($file));
+                        $demoRowCount -= 1;
+                    }
+                    fclose($output);
+                    fclose($file);
+                    exit();
                 }
             }
         }
