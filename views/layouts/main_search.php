@@ -17,7 +17,7 @@ $tags = isset($searchQuery['tags']) ? $searchQuery['tags'] : '';
         <script type="text/javascript" src="<?php echo $scriptFile; ?>"></script>
     <?php endforeach; ?>
 </head>
-<body class="search-fields">
+<body>
 <header class="main-header">
     <nav>
         <a class="logo" href="/"><img src="/img/logo.png" alt="logo"></a>
@@ -35,24 +35,24 @@ $tags = isset($searchQuery['tags']) ? $searchQuery['tags'] : '';
             <?php endif; ?>
         </ul>
         <a href="#" class="pull" id="menuIcon" data-menu-id="menu">&#9776;</a>
-        <div class="search-row">
-            <form action="/site/search" method="GET">
-                <div class="col-size-5 field-inline">
-                    <span>Search</span>
-                    <input type="text" placeholder="Criteria to search" name="searchtext"
-                           value="<?php echo $searchText; ?>">
-                </div>
-                <div class="col-size-5 field-inline">
-                    <span>Tags</span>
-                    <input type="text" placeholder="Example: economy" name="tags" value="<?php echo $tags; ?>">
-                </div>
-                <div class="col-size-2">
-                    <input type="submit" class="btn btn-success" value="Search">
-                </div>
-            </form>
-        </div>
     </nav>
 </header>
+<div class="search-row">
+    <form action="/site/search" method="GET">
+        <div class="col-size-5 field-inline">
+            <span>Search</span>
+            <input type="text" placeholder="Criteria to search" name="searchtext"
+                   value="<?php echo $searchText; ?>">
+        </div>
+        <div class="col-size-5 field-inline">
+            <span>Tags</span>
+            <input type="text" placeholder="Example: economy" name="tags" value="<?php echo $tags; ?>">
+        </div>
+        <div class="col-size-2">
+            <input type="submit" class="btn btn-success" value="Search">
+        </div>
+    </form>
+</div>
 <div class="content"><?php echo $layoutContent; ?></div>
 <footer class="main-footer">Aaron&nbsp;Estrada, Gustavs&nbsp;Venters - Advanced&nbsp;Internet&nbsp;Technologies, 2016 &copy;</footer>
 <div class="loading hidden">
