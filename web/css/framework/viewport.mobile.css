@@ -68,16 +68,10 @@
         display: block
     }
 
-    input[type=text],
-    input[type=password],
-    input[type=email] {
-        width: 93%
-    }
-
     input[type=button].btn,
     input[type=submit].btn{
         height: 2.1em;
-        width: 97%
+        width: 100%
     }
 
     input[type=button].btn-small,

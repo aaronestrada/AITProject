@@ -61,9 +61,13 @@ cite {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    vertical-align: text-bottom;
+    vertical-align: bottom;
     display: inline-block;
     max-width: 12em;
+}
+
+.right {
+    float: right;
 }
 
 /****************************
@@ -111,15 +115,15 @@ input[type=password],
 input[type=email],
 select {
     border: solid 1px #c1c1c1;
-    padding: 0.3em 0.5em;
+    padding: 0.3em 0;
     height: 1.7em;
-    width: 93%;
+    width: 100%;
     font-size: 0.8em;
 }
 
 select {
     height: 2.5em;
-    width: 98%;
+    width: 100%;
 }
 
 .field-inline * {

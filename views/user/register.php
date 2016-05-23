@@ -60,11 +60,13 @@ if ($isEdition) {
     </div>
     <div class="row-block">
         <div class="col-size-6">
-            <label>Name <span class="required">*</span></label>
-            <input type="text" name="firstname" maxlength="100" value="<?php echo $formValue['firstname']; ?>" required>
-            <label>Last name <span class="required">*</span></label>
-            <input type="text" name="lastname" maxlength="100" value="<?php echo $formValue['lastname']; ?>" required>
-            <label>Birth date <span class="required">*</span></label>
+            <div class="col-size-11">
+                <label>Name <span class="required">*</span></label>
+                <input type="text" name="firstname" maxlength="100" value="<?php echo $formValue['firstname']; ?>" required>
+                <label>Last name <span class="required">*</span></label>
+                <input type="text" name="lastname" maxlength="100" value="<?php echo $formValue['lastname']; ?>" required>
+                <label>Birth date <span class="required">*</span></label>
+            </div>
             <div class="row-block">
                 <div class="col-size-3">
                     <select name="birthdate_day" required>
@@ -76,7 +78,7 @@ if ($isEdition) {
                         <?php endfor; ?>
                     </select>
                 </div>
-                <div class="col-size-3">
+                <div class="col-size-3 col-padleft-1">
                     <select name="birthdate_month" required>
                         <option value="">Month</option>
                         <?php foreach ($monthList as $monthNumber => $monthName) : ?>
@@ -86,7 +88,7 @@ if ($isEdition) {
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-size-3">
+                <div class="col-size-3 col-padleft-1">
                     <select name="birthdate_year" required>
                         <option value="">Year</option>
                         <?php for ($year = date('Y') - 18; $year >= 1930; $year--) : ?>
@@ -98,31 +100,31 @@ if ($isEdition) {
                 </div>
             </div>
             <?php if ($isEdition) : ?>
-                <label>E-mail <span class="required">*</span></label>
-                <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
+                <div class="col-size-11">
+                    <label>E-mail <span class="required">*</span></label>
+                    <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
+                </div>
             <?php endif; ?>
         </div>
         <div class="col-size-6">
-            <?php if (!$isEdition) : ?>
-                <label>E-mail <span class="required">*</span></label>
-                <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
-            <?php else : ?>
-                <label>Current Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?>
-                </label>
-                <input type="password" name="old_password" maxlength="32">
-            <?php endif; ?>
-            <label>New Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
-            <input type="password" name="password" maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
-            <label>Confirm password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
-            <input type="password" name="confirm-password"
-                   maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
-            <?php if ($isEdition) : ?>
-                <cite>To change your current password, please complete the password fields.</cite>
-            <?php endif; ?>
-            <div class="row-block">
-                <div class="col-size-12 align-center">
-                    <input type="submit" class="btn btn-success" value="<?php echo $submitValue; ?>">
-                </div>
+            <div class="col-size-11">
+                <?php if (!$isEdition) : ?>
+                    <label>E-mail <span class="required">*</span></label>
+                    <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
+                <?php else : ?>
+                    <label>Current Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?>
+                    </label>
+                    <input type="password" name="old_password" maxlength="32">
+                <?php endif; ?>
+                <label>New Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
+                <input type="password" name="password" maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
+                <label>Confirm password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
+                <input type="password" name="confirm-password"
+                       maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
+                <?php if ($isEdition) : ?>
+                    <cite>To change your current password, please complete the password fields.</cite>
+                <?php endif; ?>
+                <input type="submit" class="btn btn-success right" value="<?php echo $submitValue; ?>">
             </div>
         </div>
     </div>

@@ -87,4 +87,12 @@
         width: 70%;
         margin: 0.3em 15% 0.3em 15%;
     }
+
+    /* fix for tiny search bar button on 400-600px screens */
+    @media screen and (max-width: 600px) {
+        div.search-row input[type=submit].btn {
+            width: 80%;
+            margin-left: 10%;
+        }
+    }
 }
