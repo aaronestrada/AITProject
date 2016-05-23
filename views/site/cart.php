@@ -30,15 +30,17 @@ $documentCount = count($documentList);
                             <p><strong>Published
                                     on:</strong> <?php echo date('d/m/Y', strtotime($documentItem->published_at)); ?>
                             </p>
+                        </div>
+                        <div class="col-size-6 col-padleft-1">
+                            <p class="description"><?php echo $documentItem->description; ?></p>
+                        </div>
+                        <div class="col-size-12">
                             <p class="tags">
                                 <?php foreach ($documentItem->getTags() as $tagObject) : ?>
                                     <a href="/site/search?tags=<?php echo urlencode($tagObject->name); ?>"
                                        class="tag"><?php echo $tagObject->name; ?></a>
                                 <?php endforeach; ?>
                             </p>
-                        </div>
-                        <div class="col-size-6 col-padleft-1">
-                            <p class="description"><?php echo $documentItem->description; ?></p>
                         </div>
                     </div>
                 </section>
