@@ -30,8 +30,9 @@ $tags = isset($searchQuery['tags']) ? $searchQuery['tags'] : '';
                 <li><a href="/site/cart">My shopping cart <span id="shoppingCount">(<?php echo $documentInCartCount; ?>)</span></a></li>
                 <li><a href="/user/orders">My orders</a></li>
                 <li><a href="/user/edit">My account</a></li>
-                <li><a href="/user/logout">Logout
-                        (<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>)</a></li>
+                <li><a href="/user/logout" title="<?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?>">
+                        Logout (<span class="ellipsis"><?php echo $this->roleAccess->getProperty('firstname'); ?> <?php echo $this->roleAccess->getProperty('lastname'); ?></span>)</a>
+                </li>
             <?php endif; ?>
         </ul>
         <a href="#" class="pull" id="menuIcon" data-menu-id="menu">&#9776;</a>
@@ -54,7 +55,8 @@ $tags = isset($searchQuery['tags']) ? $searchQuery['tags'] : '';
     </form>
 </div>
 <div class="content"><?php echo $layoutContent; ?></div>
-<footer class="main-footer">Aaron&nbsp;Estrada, Gustavs&nbsp;Venters - Advanced&nbsp;Internet&nbsp;Technologies, 2016 &copy;</footer>
+<footer class="main-footer">Aaron&nbsp;Estrada, Gustavs&nbsp;Venters - Advanced&nbsp;Internet&nbsp;Technologies,
+    2016 &copy;</footer>
 <div class="loading hidden">
     <div class="loading-image">
         <img src="/img/ajax-loader.gif" alt="loader">

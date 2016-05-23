@@ -16,22 +16,29 @@ if (is_array($tagList)) {
                 <div class="row-block">
                     <?php
                     for ($tagIndex = 0; $tagIndex < $totalTags; $tagIndex++) :
-                        $tagItem = $tagList[$tagIndex]; ?>
-                        <div class="col-size-12"><a
-                                href="/site/search?tags=<?php echo urlencode($tagItem->name); ?>"><?php echo $tagItem->name; ?>
-                                (<?php echo $tagItem->getDocumentCount(); ?>)</a></div>
-                    <?php endfor; ?>
+                        $tagItem = $tagList[$tagIndex];
+                        $documentCount = $tagItem->getDocumentCount();
+                        if ($documentCount > 0) : ?>
+                            <div class="col-size-12"><a
+                                    href="/site/search?tags=<?php echo urlencode($tagItem->name); ?>"><?php echo $tagItem->name; ?>
+                                    (<?php echo $documentCount; ?>)</a></div>
+                        <?php endif;
+                    endfor; ?>
                 </div>
                 <div class="row-block" id="tagList" style="display: none;">
                     <?php
                     for ($tagIndex = $totalTags; $tagIndex < $totalTagCount; $tagIndex++) :
-                        $tagItem = $tagList[$tagIndex]; ?>
-                        <div class="col-size-12"><a
-                                href="/site/search?tags=<?php echo urlencode($tagItem->name); ?>"><?php echo $tagItem->name; ?>
-                                (<?php echo $tagItem->getDocumentCount(); ?>)</a></div>
-                    <?php endfor; ?>
+                        $tagItem = $tagList[$tagIndex];
+                        $documentCount = $tagItem->getDocumentCount();
+                        if ($documentCount > 0) : ?>
+                            <div class="col-size-12"><a
+                                    href="/site/search?tags=<?php echo urlencode($tagItem->name); ?>"><?php echo $tagItem->name; ?>
+                                    (<?php echo $documentCount; ?>)</a></div>
+                        <?php endif;
+                    endfor; ?>
                 </div>
-                <summary><a href="#" class="toggle" id="lnkShowMoreTags" data-toggle="show" data-more="More &#9660;" data-less="Less &#9650;">More &#9660;</a></summary>
+                <summary><a href="#" class="toggle" id="lnkShowMoreTags" data-toggle="show" data-more="More &#9660;"
+                            data-less="Less &#9650;">More &#9660;</a></summary>
             </section>
         </article>
     </div>

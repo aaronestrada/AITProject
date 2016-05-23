@@ -130,6 +130,11 @@ article.tags a.toggle:hover {
     text-decoration: none;
     color: #5784ed;
 }
+
+article.document:first-of-type {
+    margin-top: 1em
+}
+
 /* chart */
 #chartArea select {
     height: 8em;
@@ -139,6 +144,9 @@ article.tags a.toggle:hover {
     padding: 0;
 }
 
-#chartArea h1, h2, h3, h4 {
+#chartArea h1,
+#chartArea h2,
+#chartArea h3,
+#chartArea h4 {
     padding: 0 3%;
 }
