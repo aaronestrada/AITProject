@@ -88,9 +88,9 @@ header.main-header nav {
  ****************************/
 div.content {
     width: 90%;
+    max-width: 1000px;
     display: block;
-    margin: 0 5% 5em;
-    float: left;
+    margin: 0 auto 5em auto;
 }
 
 /****************************

@@ -26,45 +26,42 @@ $this->view->addScript('/js/user/orders.js');
                 </header>
                 <section>
                     <div class="row-block">
-                        <table style="width: 100%">
-                            <tbody>
-                            <?php
-                            if (isset($documentObjectList[$purchaseItem->id])) :
-                                $documentList = $documentObjectList[$purchaseItem->id];
-                                foreach ($documentList as $documentItem) :
-                                    $objDocument = $documentItem['documentItem'];
-                                    $documentPurchasePrice = $documentItem['purchasePrice'];
-                                    $totalPurchase += $documentPurchasePrice;
-                                    ?>
-                                    <tr>
-                                        <td class=""><?php echo $objDocument->name; ?></td>
-                                        <td class="align-right">
-                                            <span>USD $</span><?php echo number_format($documentPurchasePrice, 2, '.', ','); ?>
-                                        </td>
-                                        <td class="align-right">
-                                            <input type="button"
-                                                   class="btn-small btn-default moreInfoButton"
-                                                   value="Details"
-                                                   data-id="<?php echo $objDocument->id; ?>">
-                                            <input type="button"
-                                                   class="btn-small btn-default downloadButton"
-                                                   value="Download"
-                                                   data-id="<?php echo $objDocument->id; ?>">
-                                        </td>
-                                    </tr>
-                                    <?php
-                                endforeach;
-                            endif; ?>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td width="50%"><strong>ORDER TOTAL</strong></td>
-                                <td class="align-right"><strong>USD
-                                        $<?php echo number_format($totalPurchase, 2, '.', ',');; ?></strong></td>
-                                <td></td>
-                            </tr>
-                            </tfoot>
-                        </table>
+
+                        <?php
+                        if (isset($documentObjectList[$purchaseItem->id])) :
+                            $documentList = $documentObjectList[$purchaseItem->id];
+                            foreach ($documentList as $documentItem) :
+                                $objDocument = $documentItem['documentItem'];
+                                $documentPurchasePrice = $documentItem['purchasePrice'];
+                                $totalPurchase += $documentPurchasePrice;
+                                ?>
+                                <div class="col-size-12">
+                                    <div class="col-size-6">
+                                        <span><p><?php echo $objDocument->name; ?></p></span>
+                                    </div>
+                                    <div class="col-size-2">
+                                        <span>USD $</span><?php echo number_format($documentPurchasePrice, 2, '.', ','); ?>
+                                    </div>
+                                    <div class="col-size-4 align-right">
+                                        <input type="button"
+                                               class="btn-small btn-default moreInfoButton"
+                                               value="Details"
+                                               data-id="<?php echo $objDocument->id; ?>">
+                                        <input type="button"
+                                               class="btn-small btn-default downloadButton"
+                                               value="Download"
+                                               data-id="<?php echo $objDocument->id; ?>">
+                                    </div>
+                                </div>
+                                <?php
+                            endforeach;
+                        endif; ?>
+                        <div class="col-size-6">
+                            <strong>ORDER TOTAL</strong>
+                        </div>
+                        <div class="col-size-2">
+                            <strong>USD $<?php echo number_format($totalPurchase, 2, '.', ',');; ?></strong>
+                        </div>
                     </div>
                 </section>
             </article>
