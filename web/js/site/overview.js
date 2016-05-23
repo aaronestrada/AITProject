@@ -143,6 +143,9 @@ function buildGraph(csvDataset) {
 
 // AJAX call to get csv document
 $(document).ready(function() {
+    $('#addColumnButton').click(addColumns);
+    $('#removeColumnButton').click(removeColumns);
+
     // Load data
     var document_id = $("#chartArea").data('id');
     var xhr = new XMLHttpRequest();

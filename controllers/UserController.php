@@ -124,6 +124,7 @@ class UserController extends BaseController {
             'email' => trim(strtolower($this->request->getParameter('email'))),
             'firstname' => trim($this->request->getParameter('firstname')),
             'lastname' => trim($this->request->getParameter('lastname')),
+            'old_password' => $this->request->getParameter('old_password'),
             'password' => $this->request->getParameter('password'),
             'confirmPassword' => $this->request->getParameter('confirm-password'),
             'birthdate' => ''
@@ -154,6 +155,7 @@ class UserController extends BaseController {
         $firstname = $formValues['firstname'];
         $lastname = $formValues['lastname'];
         $password = $formValues['password'];
+        $old_password = $formValues['old_password'];
         $confirmPassword = $formValues['confirmPassword'];
         $birthdate = $formValues['birthdate'];
 
@@ -203,6 +205,19 @@ class UserController extends BaseController {
             $validatePasswordFields = ($password != '') || ($confirmPassword != '');
 
         if ($validatePasswordFields) {
+            if($isEdition) {
+                if ($old_password == '')
+                    array_push($errorList, 'error_old_password_empty');
+                else {
+                    $objUser = new User();
+                    $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
+                    if($objUser != null) {
+                        if (!$objUser->checkPassword($old_password))
+                            array_push($errorList, 'error_old_password_do_not_match');
+                    }
+                }
+            }
+
             //Verify empty password field
             if ($password == '')
                 array_push($errorList, 'error_password_empty');

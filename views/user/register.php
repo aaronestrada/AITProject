@@ -97,17 +97,27 @@ if ($isEdition) {
                     </select>
                 </div>
             </div>
+            <?php if ($isEdition) : ?>
+                <label>E-mail <span class="required">*</span></label>
+                <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
+            <?php endif; ?>
         </div>
         <div class="col-size-6">
-            <label>E-mail <span class="required">*</span></label>
-            <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
-            <label>Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
+            <?php if (!$isEdition) : ?>
+                <label>E-mail <span class="required">*</span></label>
+                <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
+            <?php else : ?>
+                <label>Current Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?>
+                </label>
+                <input type="password" name="old_password" maxlength="32">
+            <?php endif; ?>
+            <label>New Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
             <input type="password" name="password" maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
             <label>Confirm password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
             <input type="password" name="confirm-password"
                    maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
             <?php if ($isEdition) : ?>
-                <cite>Leave empty the password field if you do not want to change it.</cite>
+                <cite>To change your current password, please complete the password fields.</cite>
             <?php endif; ?>
             <div class="row-block">
                 <div class="col-size-12 align-center">
