@@ -13,12 +13,12 @@
         <div class="row-block">
             <br>
             <form action="/site/search" method="GET">
-                <div class="col-size-9">
+                <div class="col-size-8">
                     <input type="text" placeholder="Enter your search criteria" name="searchtext" required>
                     <input type="hidden" name="tags">
                 </div>
-                <div class="col-size-3">
-                    <input type="submit" value="Let's begin!" class="btn btn-success">
+                <div class="col-size-4">
+                    <input type="submit" value="Let's begin!" class="btn btn-success col-size-12">
                 </div>
             </form>
             <br>
