@@ -102,9 +102,10 @@ header.main-header nav {
  ****************************/
 div.content {
     width: 90%;
-    max-width: 1000px;
+    padding: 0 5%;
     display: block;
     margin: 0 auto 5em auto;
+    float: left;
 }
 
 /****************************
