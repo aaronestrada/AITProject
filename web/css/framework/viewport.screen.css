@@ -67,4 +67,9 @@
         width: 60%;
         margin: 0.3em 20% 0.3em 20%;
     }
+
+    div.content {
+        width: 70%!important;
+        padding: 0 15%!important;
+    }
 }
