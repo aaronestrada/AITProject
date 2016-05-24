@@ -114,7 +114,8 @@ article.tags header {
 article.tags a {
     font-size: 0.8em;
     color: #4257a9;
-    padding-left: 1em
+    padding-left: 1em;
+    float: left;
 }
 
 article.tags a:hover {
