@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Open Data System</title>
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png"/>
     <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
     <link href="/css/framework.main.css" rel="stylesheet" type="text/css">
 </head>

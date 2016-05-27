@@ -17,10 +17,10 @@
                     <div>Last name is empty</div>
                     <?php break;
                 case 'error_old_password_empty': ?>
-                    <div>Old Password is empty</div>
+                    <div>Current password is empty</div>
                     <?php break;
                 case 'error_old_password_do_not_match': ?>
-                    <div>Old Password is incorrect</div>
+                    <div>Current password is incorrect</div>
                     <?php break;
                 case 'error_password_empty': ?>
                     <div>Password is empty</div>

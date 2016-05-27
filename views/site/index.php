@@ -1,3 +1,4 @@
+<?php echo $loggedInMessage; ?>
 <article class="main-info">
     <header>
         <h1>Looking for some data?</h1>

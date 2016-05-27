@@ -81,7 +81,11 @@ class UserController extends BaseController {
                     //Step 8: Login user
                     $this->roleAccess->login(['user']);
 
-                    //Step 9: Redirect to another page
+                    //Step 9: Save in session that has already logged in
+                    $objSession = new BaseSession();
+                    $objSession->set('logged_in', true);
+
+                    //Step 10: Redirect to another page
                     $this->redirect('site/index');
                 }
             }
@@ -212,19 +216,6 @@ class UserController extends BaseController {
             $validatePasswordFields = ($password != '') || ($confirmPassword != '');
 
         if ($validatePasswordFields) {
-            if($isEdition) {
-                if ($old_password == '')
-                    array_push($errorList, 'error_old_password_empty');
-                else {
-                    $objUser = new User();
-                    $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
-                    if($objUser != null) {
-                        if (!$objUser->checkPassword($old_password))
-                            array_push($errorList, 'error_old_password_do_not_match');
-                    }
-                }
-            }
-
             //Verify empty password field
             if ($password == '')
                 array_push($errorList, 'error_password_empty');
@@ -240,6 +231,19 @@ class UserController extends BaseController {
 
         if (!Validations::validateDate($birthdate))
             array_push($errorList, 'error_birthdate_invalid');
+
+        if($isEdition) {
+            if ($old_password == '')
+                array_push($errorList, 'error_old_password_empty');
+            else {
+                $objUser = new User();
+                $objUser = $objUser->fetchOne($this->roleAccess->getProperty('id'));
+                if($objUser != null) {
+                    if (!$objUser->checkPassword($old_password))
+                        array_push($errorList, 'error_old_password_do_not_match');
+                }
+            }
+        }
 
         return $errorList;
     }

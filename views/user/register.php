@@ -114,17 +114,17 @@ if ($isEdition) {
                     <label>E-mail <span class="required">*</span></label>
                     <input type="email" name="email" maxlength="150" value="<?php echo $formValue['email']; ?>" required>
                 <?php else : ?>
-                    <label>Current Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?>
+                    <label>Current password <span class="required">*</span>
                     </label>
                     <input type="password" name="old_password" maxlength="32">
                 <?php endif; ?>
-                <label>New Password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
+                <label>New password <span class="required">*<?php if ($isEdition) : ?>*<?php endif; ?></span></label>
                 <input type="password" name="password" maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
-                <label>Confirm password<?php if (!$isEdition) : ?> <span class="required">*</span><?php endif; ?></label>
+                <label>Confirm password <span class="required">*<?php if ($isEdition) : ?>*<?php endif; ?></span></label>
                 <input type="password" name="confirm-password"
                        maxlength="32"<?php if (!$isEdition) : ?> required<?php endif; ?>>
                 <?php if ($isEdition) : ?>
-                    <cite>To change your current password, please complete the password fields.</cite>
+                    <cite><span class="required">**</span> To change your current password, please complete the password fields.</cite>
                 <?php endif; ?>
                 <input type="submit" class="btn btn-success right" value="<?php echo $submitValue; ?>">
             </div>

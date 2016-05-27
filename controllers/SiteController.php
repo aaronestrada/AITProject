@@ -47,8 +47,22 @@ class SiteController extends BaseController {
      * Show initial page
      */
     public function actionIndex() {
+        /**
+         * Verify that user has just logged in to show welcome alert
+         */
+        $objSession = new BaseSession();
+        $loggedIn = $objSession->get('logged_in');
+        
+        $loggedInMessage = '';
+        if($loggedIn != null) {
+            $this->hasLayout(false);
+            $loggedInMessage = $this->render('partial/loggedinalert', [], false);
+            $objSession->remove('logged_in');
+        }
+
+        $this->hasLayout(true);
         $this->setLayoutVariable('hideHomeLink', true);
-        $this->render('index');
+        $this->render('index', ['loggedInMessage' => $loggedInMessage]);
     }
 
     /**
