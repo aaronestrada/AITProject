@@ -66,6 +66,9 @@ Apache configuration
                 Options FollowSymLinks
                 AllowOverride All
                 Order deny,allow
+                
+                #Error handling
+                ErrorDocument 403 /errors/403.html
 
                 RewriteEngine on
                 RewriteCond %{REQUEST_FILENAME} !-f

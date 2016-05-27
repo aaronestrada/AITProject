@@ -22,7 +22,7 @@ class DocumentController extends BaseController {
             ],
             [
                 'permission' => 'allow',
-                'actions' => ['*'],
+                'actions' => ['togglecart', 'download'],
                 'roles' => ['@']
             ]
         ];

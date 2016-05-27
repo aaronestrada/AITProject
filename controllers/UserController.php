@@ -17,7 +17,7 @@ class UserController extends BaseController {
         return [
             [
                 'permission' => 'allow',
-                'actions' => ['edit', 'edituser', 'purchases'],
+                'actions' => ['edit', 'edituser', 'orders'],
                 'roles' => ['@']
             ]
         ];
@@ -99,11 +99,18 @@ class UserController extends BaseController {
         ]);
     }
 
+    /**
+     * Action to logout from the system
+     */
     public function actionLogout() {
         $this->roleAccess->logout();
         $this->redirect('site/index');
     }
 
+    /**
+     * Show register form
+     * Only works if user is not logged in, otherwise it redirects to index page
+     */
     public function actionRegister() {
         if ($this->roleAccess->isLoggedIn())
             $this->redirect('site/index');
