@@ -5,6 +5,7 @@
     <title>Open Data System</title>
     <link rel="shortcut icon" type="image/png" href="/img/favicon.png"/>
     <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/framework.main.css" rel="stylesheet" type="text/css">
     <?php foreach ($this->view->getCSSScripts() as $cssFile) : ?>
         <link rel="stylesheet" href="<?php echo $cssFile; ?>" type="text/css">
